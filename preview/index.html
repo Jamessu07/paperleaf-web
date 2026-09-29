@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <style>
     :root {
       color-scheme: light;
@@ -89,7 +90,7 @@
     .paper-sheet::before { position: absolute; top: 22px; right: 22px; width: 25px; height: 25px; content: ""; border-radius: 50%; background: var(--orange); opacity: .14; }
     .paper-line { height: 5px; margin-bottom: 15px; border-radius: 5px; background: #eadbd0; }
     .paper-line.short { width: 58%; }
-    .paper-check { display: flex; align-items: center; gap: 8px; margin-top: 20px; color: var(--orange-deep); font-size: 11px; font-weight: 800; }
+    .paper-check { display: flex; align-items: center; gap: 8px; margin-top: 20px; color: var(--orange-deep); font-size: 12px; font-weight: 800; }
     .paper-check span { display: grid; place-items: center; width: 18px; height: 18px; border: 2px solid var(--orange); border-radius: 5px; }
     .paper-check .icon { width: 12px; height: 12px; stroke-width: 2.7; }
     .hero-spark { position: absolute; right: 4px; bottom: 18px; display: grid; place-items: center; width: 58px; height: 58px; border: 1px solid rgba(51, 35, 30, .18); border-radius: 50%; background: #ffd99d; transform: rotate(8deg); }
@@ -123,7 +124,7 @@
     .cover-icon { position: relative; z-index: 1; display: grid; place-items: center; width: 70px; height: 70px; border: 1px solid rgba(51, 35, 30, .1); border-radius: 22px; color: var(--orange-deep); background: rgba(255, 255, 255, .76); box-shadow: 0 10px 20px rgba(91, 52, 30, .1); transform: rotate(-5deg); }
     .cover-icon .icon { width: 34px; height: 34px; stroke-width: 1.7; }
     .meta { padding: 14px 4px 3px; }
-    .meta-top { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 11px; font-weight: 800; }
+    .meta-top { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 12px; font-weight: 800; }
     .meta strong { display: block; margin-top: 7px; overflow: hidden; font: 600 21px/1.1 "Fredoka", ui-rounded, sans-serif; white-space: nowrap; text-overflow: ellipsis; }
     .meta small { display: block; margin-top: 8px; color: var(--muted); font-size: 12px; }
     .empty { grid-column: 1 / -1; display: grid; justify-items: center; gap: 12px; padding: 62px 20px; border: 1px dashed #d9c7b8; border-radius: 22px; color: var(--muted); background: rgba(255, 255, 255, .55); text-align: center; }
@@ -137,11 +138,42 @@
     .local-note .icon { width: 15px; height: 15px; color: var(--orange-deep); }
     .reader { position: fixed; inset: 0; z-index: 5; display: flex; flex-direction: column; background: #2d211d; }
     .reader[hidden] { display: none; }
-    .reader-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; color: #fff; background: #3b2922; }
+    .reader-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; color: #fff; background: #3b2922; flex-wrap: wrap; }
     .reader-bar strong { font: 500 20px "Fredoka", ui-rounded, sans-serif; }
+    .reader-heading { display: grid; gap: 2px; }
+    .reader-heading span { color: rgba(255, 255, 255, .65); font-size: 12px; font-weight: 800; }
+    .reader-toolbar { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
     .reader-bar button { color: #fff; background: rgba(255, 255, 255, .12); }
     .reader-bar button:hover { background: rgba(255, 255, 255, .2); }
-    iframe { flex: 1; width: 100%; border: 0; background: #fff; }
+    .reader-bar .tool-button, .reader-bar .save-button, .reader-bar .close-button { min-width: 42px; min-height: 40px; padding: 0 11px; border-radius: 11px; }
+    .reader-bar .tool-button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-color: rgba(255, 255, 255, .12); }
+    .reader-bar .tool-button.active { color: var(--ink); background: #fff7ea; }
+    .reader-bar .tool-button span { font-size: 12px; font-weight: 800; }
+    .reader-bar .tool-button .icon, .reader-bar .save-button .icon { width: 17px; height: 17px; }
+    .reader-bar .save-button { color: var(--ink); background: var(--sun); }
+    .reader-stage { flex: 1; min-height: 0; overflow: hidden; background: #4a3329; }
+    .pdf-viewer { height: 100%; overflow: auto; padding: 28px 16px 60px; overscroll-behavior: contain; }
+    .pdf-page { position: relative; width: fit-content; max-width: 100%; margin: 0 auto 24px; background: #fff; box-shadow: 0 14px 28px rgba(22, 11, 7, .22); }
+    .pdf-page canvas { display: block; max-width: 100%; height: auto; }
+    .pdf-page .pdf-annotation-layer { position: absolute; inset: 0; width: 100%; height: 100%; cursor: crosshair; touch-action: none; }
+    .pdf-loading { display: grid; place-items: center; min-height: 180px; color: #fff8ef; font-size: 14px; font-weight: 800; }
+    #pdf-frame { width: 100%; height: 100%; border: 0; background: #fff; }
+    .notebook-page { position: relative; width: min(900px, calc(100% - 32px)); height: calc(100% - 48px); min-height: 520px; margin: 24px auto; overflow: hidden; border-radius: 14px; background: #fffdf8; box-shadow: 0 14px 28px rgba(22, 11, 7, .22); }
+    .notebook-page::before { position: absolute; inset: 58px 44px 36px; content: ""; opacity: .55; background: repeating-linear-gradient(to bottom, transparent 0 31px, #efdccf 32px 33px); pointer-events: none; }
+    .notebook-page::after { position: absolute; top: 0; bottom: 0; left: 72px; width: 1px; content: ""; background: rgba(255, 97, 21, .18); pointer-events: none; }
+    .notebook-page canvas { position: absolute; inset: 0; width: 100%; height: 100%; cursor: crosshair; touch-action: none; }
+    .notebook-page .paper-label { position: absolute; top: 22px; left: 44px; color: #c06a45; font: 600 17px "Fredoka", ui-rounded, sans-serif; pointer-events: none; }
+    @media (max-width: 680px) {
+      .reader-bar { align-items: flex-start; padding: 12px; }
+      .reader-toolbar { width: 100%; }
+      .reader-bar .tool-button { flex: 1; }
+      .reader-bar .tool-button span { display: none; }
+      .reader-bar .save-button, .reader-bar .close-button { flex: 1.4; }
+      .notebook-page { width: calc(100% - 20px); height: calc(100% - 24px); min-height: 480px; margin: 12px auto; }
+      .notebook-page::before { left: 26px; right: 18px; }
+      .notebook-page::after { left: 46px; }
+      .notebook-page .paper-label { left: 26px; }
+    }
     #toast { position: fixed; left: 50%; bottom: 24px; z-index: 10; display: flex; align-items: center; gap: 8px; max-width: min(90vw, 420px); padding: 13px 17px; border-radius: 14px; color: #fff; background: #3b2922; box-shadow: var(--shadow); font-size: 13px; font-weight: 800; opacity: 0; pointer-events: none; transform: translate(-50%, 20px); transition: opacity .2s ease, transform .2s ease; }
     #toast.show { opacity: 1; transform: translate(-50%, 0); }
 
@@ -195,6 +227,9 @@
     <symbol id="icon-sparkle" viewBox="0 0 24 24"><path d="m12 3 1.2 5.8L19 10l-5.8 1.2L12 17l-1.2-5.8L5 10l5.8-1.2Z"/><path d="m19 16 .5 2.5L22 19l-2.5.5L19 22l-.5-2.5L16 19l2.5-.5Z"/></symbol>
     <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
     <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+    <symbol id="icon-eraser" viewBox="0 0 24 24"><path d="m8.5 18.5-3-3a2.1 2.1 0 0 1 0-3L14.7 3.3a2.1 2.1 0 0 1 3 0l3 3a2.1 2.1 0 0 1 0 3l-9.2 9.2Z"/><path d="m13 5 6 6M4 20h8"/></symbol>
+    <symbol id="icon-undo" viewBox="0 0 24 24"><path d="M9 7 4 12l5 5"/><path d="M4 12h10a6 6 0 0 1 6 6v1"/></symbol>
+    <symbol id="icon-save" viewBox="0 0 24 24"><path d="M5 4h12l2 2v14H5Z"/><path d="M8 4v6h8V4M8 20v-6h8v6"/></symbol>
   </svg>
 
   <main class="shell" id="library">
@@ -242,8 +277,32 @@
   </main>
 
   <section class="reader" id="reader" hidden aria-label="PDF reader">
-    <div class="reader-bar"><strong id="reader-title">PDF</strong><button id="close-reader" type="button">Back to library</button></div>
-    <iframe id="pdf-frame" title="PDF reader"></iframe>
+    <div class="reader-bar">
+      <div class="reader-heading"><strong id="reader-title">PDF</strong><span id="reader-meta">Draw directly on your pages</span></div>
+      <div class="reader-toolbar" id="pdf-toolbar">
+        <button class="tool-button active" type="button" data-draw-tool="pen" aria-label="Pen" title="Pen"><svg class="icon"><use href="#icon-pencil"></use></svg><span>Pen</span></button>
+        <button class="tool-button" type="button" data-draw-tool="highlighter" aria-label="Highlighter" title="Highlighter"><svg class="icon"><use href="#icon-sparkle"></use></svg><span>Highlight</span></button>
+        <button class="tool-button" type="button" data-draw-tool="eraser" aria-label="Eraser" title="Eraser"><svg class="icon"><use href="#icon-eraser"></use></svg><span>Erase</span></button>
+        <button class="tool-button" id="pdf-undo" type="button" aria-label="Undo last mark" title="Undo last mark"><svg class="icon"><use href="#icon-undo"></use></svg><span>Undo</span></button>
+        <button class="save-button" id="pdf-save" type="button"><span class="button-content"><svg class="icon"><use href="#icon-save"></use></svg>Save marks</span></button>
+        <button class="close-button" id="close-reader" type="button">Back to library</button>
+      </div>
+    </div>
+    <div class="reader-stage" id="pdf-stage"><div class="pdf-viewer" id="pdf-viewer"></div><iframe id="pdf-frame" title="PDF reader" hidden></iframe></div>
+  </section>
+  <section class="reader notebook-editor" id="notebook-editor" hidden aria-label="Handwritten notebook editor">
+    <div class="reader-bar">
+      <div class="reader-heading"><strong id="notebook-title">Untitled Notebook</strong><span>Write with your mouse, trackpad, or finger</span></div>
+      <div class="reader-toolbar">
+        <button class="tool-button active" type="button" data-draw-tool="pen" aria-label="Pen" title="Pen"><svg class="icon"><use href="#icon-pencil"></use></svg><span>Pen</span></button>
+        <button class="tool-button" type="button" data-draw-tool="highlighter" aria-label="Highlighter" title="Highlighter"><svg class="icon"><use href="#icon-sparkle"></use></svg><span>Highlight</span></button>
+        <button class="tool-button" type="button" data-draw-tool="eraser" aria-label="Eraser" title="Eraser"><svg class="icon"><use href="#icon-eraser"></use></svg><span>Erase</span></button>
+        <button class="tool-button" id="notebook-undo" type="button" aria-label="Undo last mark" title="Undo last mark"><svg class="icon"><use href="#icon-undo"></use></svg><span>Undo</span></button>
+        <button class="save-button" id="notebook-save" type="button"><span class="button-content"><svg class="icon"><use href="#icon-save"></use></svg>Save page</span></button>
+        <button class="close-button" id="close-notebook" type="button">Back to library</button>
+      </div>
+    </div>
+    <div class="reader-stage"><div class="notebook-page"><span class="paper-label">PaperLeaf notes</span><canvas id="notebook-canvas" aria-label="Handwritten notebook page"></canvas></div></div>
   </section>
   <input id="file-input" type="file" accept="application/pdf,.pdf" multiple hidden>
   <div id="toast" role="status" aria-live="polite"></div>
@@ -259,6 +318,13 @@
     ];
     let notebooks = [...seed];
     let db;
+    let activePdfItem;
+    let activeNotebookItem;
+    let activeSurface = 'pdf';
+    let activePdfPage = 1;
+    let activePdfAnnotations = {};
+    let activeNotebookAnnotations = [];
+    let drawingTool = 'pen';
     const grid = document.querySelector('#grid');
     const count = document.querySelector('#count');
     const search = document.querySelector('#search');
@@ -266,6 +332,62 @@
     const icon = name => `<svg class="icon"><use href="#icon-${name}"></use></svg>`;
     const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
     const toneClass = tone => ['mint', 'sky', 'lilac', 'sun', 'peach'].includes(tone) ? `tone-${tone}` : 'tone-sky';
+    const pdfViewer = document.querySelector('#pdf-viewer');
+    const notebookCanvas = document.querySelector('#notebook-canvas');
+
+    function annotationKey(id) { return `annotations:${id}`; }
+
+    function clamp(value, min = 0, max = 1) { return Math.min(max, Math.max(min, value)); }
+
+    function drawStrokes(canvas, strokes = []) {
+      if (!canvas || !canvas.clientWidth || !canvas.clientHeight) return;
+      const context = canvas.getContext('2d');
+      context.clearRect(0, 0, canvas.width, canvas.height);
+      const scale = canvas.width / canvas.clientWidth;
+      strokes.forEach(stroke => {
+        if (!stroke.points?.length) return;
+        context.save();
+        context.globalCompositeOperation = stroke.tool === 'eraser' ? 'destination-out' : 'source-over';
+        context.globalAlpha = stroke.tool === 'highlighter' ? .28 : 1;
+        context.strokeStyle = stroke.tool === 'highlighter' ? '#ffb52b' : (stroke.color || '#ff6115');
+        context.lineWidth = (stroke.size || 3) * scale * (stroke.tool === 'highlighter' ? 4 : stroke.tool === 'eraser' ? 6 : 1);
+        context.lineCap = 'round';
+        context.lineJoin = 'round';
+        context.beginPath();
+        stroke.points.forEach((point, index) => {
+          const x = point.x * canvas.width;
+          const y = point.y * canvas.height;
+          if (index === 0) context.moveTo(x, y); else context.lineTo(x, y);
+        });
+        context.stroke();
+        context.restore();
+      });
+    }
+
+    function bindDrawingCanvas(canvas, getStrokes, onChange, pageNumber = 1) {
+      let currentStroke;
+      const pointFromEvent = event => {
+        const rect = canvas.getBoundingClientRect();
+        return { x: clamp((event.clientX - rect.left) / rect.width), y: clamp((event.clientY - rect.top) / rect.height) };
+      };
+      canvas.addEventListener('pointerdown', event => {
+        event.preventDefault();
+        canvas.setPointerCapture(event.pointerId);
+        if (activeSurface === 'pdf') activePdfPage = pageNumber;
+        currentStroke = { tool: drawingTool, color: '#ff6115', size: drawingTool === 'highlighter' ? 4 : 3, points: [pointFromEvent(event)] };
+        getStrokes().push(currentStroke);
+        drawStrokes(canvas, getStrokes());
+      });
+      canvas.addEventListener('pointermove', event => {
+        if (!currentStroke) return;
+        event.preventDefault();
+        currentStroke.points.push(pointFromEvent(event));
+        drawStrokes(canvas, getStrokes());
+      });
+      const finishStroke = () => { if (currentStroke) { currentStroke = null; onChange(); } };
+      canvas.addEventListener('pointerup', finishStroke);
+      canvas.addEventListener('pointercancel', finishStroke);
+    }
 
     function render() {
       const query = search.value.trim().toLowerCase();
@@ -301,8 +423,12 @@
     function openDB() {
       return new Promise(resolve => {
         if (!('indexedDB' in window)) return resolve(null);
-        const request = indexedDB.open('paperleaf-web', 1);
-        request.onupgradeneeded = () => request.result.createObjectStore('documents', { keyPath: 'id' });
+        const request = indexedDB.open('paperleaf-web', 2);
+        request.onupgradeneeded = () => {
+          const database = request.result;
+          if (!database.objectStoreNames.contains('documents')) database.createObjectStore('documents', { keyPath: 'id' });
+          if (!database.objectStoreNames.contains('annotations')) database.createObjectStore('annotations', { keyPath: 'id' });
+        };
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => resolve(null);
       });
@@ -322,6 +448,20 @@
       db.transaction('documents', 'readwrite').objectStore('documents').put(record);
     }
 
+    function loadAnnotations(id) {
+      return new Promise(resolve => {
+        if (!db || !db.objectStoreNames.contains('annotations')) return resolve(null);
+        const request = db.transaction('annotations').objectStore('annotations').get(annotationKey(id));
+        request.onsuccess = () => resolve(request.result?.pages || null);
+        request.onerror = () => resolve(null);
+      });
+    }
+
+    function saveAnnotations(id, pages) {
+      if (!db || !db.objectStoreNames.contains('annotations')) return;
+      db.transaction('annotations', 'readwrite').objectStore('annotations').put({ id: annotationKey(id), pages });
+    }
+
     function addFiles(files) {
       [...files].forEach(file => {
         const record = { id: crypto.randomUUID(), title: file.name.replace(/\.pdf$/i, ''), detail: 'PDF · imported in this browser', type: 'PDF', tone: 'peach', file };
@@ -339,13 +479,120 @@
       show('A fresh page is ready.');
     }
 
+    async function renderPdfDocument(item) {
+      const frame = document.querySelector('#pdf-frame');
+      pdfViewer.hidden = false;
+      frame.hidden = true;
+      pdfViewer.innerHTML = '<div class="pdf-loading">Opening your pages…</div>';
+      activePdfAnnotations = await loadAnnotations(item.id) || {};
+      if (!window.pdfjsLib) {
+        frame.src = item.url;
+        frame.hidden = false;
+        pdfViewer.hidden = true;
+        document.querySelector('#reader-meta').textContent = 'PDF preview loaded. Connect to the internet to draw on pages.';
+        return;
+      }
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      try {
+        const source = item.file ? { data: await item.file.arrayBuffer() } : { url: item.url };
+        const pdf = await window.pdfjsLib.getDocument(source).promise;
+        document.querySelector('#reader-meta').textContent = `${pdf.numPages} page${pdf.numPages === 1 ? '' : 's'} · draw directly on the page`;
+        pdfViewer.innerHTML = '';
+        for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
+          const page = await pdf.getPage(pageNumber);
+          const baseViewport = page.getViewport({ scale: 1 });
+          const maxWidth = Math.min(Math.max(pdfViewer.clientWidth - 32, 280), 900);
+          const scale = Math.min(1.5, Math.max(.65, maxWidth / baseViewport.width));
+          const viewport = page.getViewport({ scale });
+          const wrapper = document.createElement('div');
+          wrapper.className = 'pdf-page';
+          wrapper.dataset.page = pageNumber;
+          wrapper.style.width = `${viewport.width}px`;
+          const canvas = document.createElement('canvas');
+          canvas.width = viewport.width;
+          canvas.height = viewport.height;
+          const annotationCanvas = document.createElement('canvas');
+          annotationCanvas.className = 'pdf-annotation-layer';
+          annotationCanvas.width = viewport.width;
+          annotationCanvas.height = viewport.height;
+          wrapper.append(canvas, annotationCanvas);
+          pdfViewer.append(wrapper);
+          await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+          const getPageStrokes = () => activePdfAnnotations[pageNumber] || (activePdfAnnotations[pageNumber] = []);
+          drawStrokes(annotationCanvas, getPageStrokes());
+          bindDrawingCanvas(annotationCanvas, getPageStrokes, () => {}, pageNumber);
+        }
+      } catch (error) {
+        pdfViewer.innerHTML = '<div class="pdf-loading">This PDF could not be opened here. Try importing it again.</div>';
+        show('Could not open this PDF.');
+      }
+    }
+
+    async function openPdfEditor(item) {
+      activePdfItem = item;
+      activeSurface = 'pdf';
+      document.querySelector('#reader-title').textContent = item.title;
+      document.querySelector('#reader').hidden = false;
+      document.querySelector('#notebook-editor').hidden = true;
+      await renderPdfDocument(item);
+    }
+
+    function resizeNotebookCanvas() {
+      if (!notebookCanvas) return;
+      const rect = notebookCanvas.getBoundingClientRect();
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      notebookCanvas.width = Math.max(1, Math.round(rect.width * ratio));
+      notebookCanvas.height = Math.max(1, Math.round(rect.height * ratio));
+      drawStrokes(notebookCanvas, activeNotebookAnnotations);
+    }
+
+    async function openNotebookEditor(item) {
+      activeNotebookItem = item;
+      activeSurface = 'notebook';
+      activeNotebookAnnotations = await loadAnnotations(`notebook:${item.id}`) || [];
+      document.querySelector('#notebook-title').textContent = item.title;
+      document.querySelector('#notebook-editor').hidden = false;
+      document.querySelector('#reader').hidden = true;
+      requestAnimationFrame(resizeNotebookCanvas);
+    }
+
     function openNotebook(card) {
       const item = notebooks.find(notebook => notebook.id === card?.dataset.id);
       if (!item) return;
-      if (!item.file) return show('Handwriting editor is next for the web version.');
-      document.querySelector('#reader-title').textContent = item.title;
-      document.querySelector('#pdf-frame').src = item.url;
-      document.querySelector('#reader').hidden = false;
+      if (item.type === 'NOTEBOOK') return openNotebookEditor(item);
+      if (!item.file) return show('This sample PDF is a preview. Import the PDF to annotate it.');
+      openPdfEditor(item);
+    }
+
+    function undoActiveStroke() {
+      if (activeSurface === 'pdf') {
+        const strokes = activePdfAnnotations[activePdfPage] || [];
+        if (!strokes.length) return show('Nothing to undo on this page yet.');
+        strokes.pop();
+        const canvas = document.querySelector(`.pdf-page[data-page="${activePdfPage}"] .pdf-annotation-layer`);
+        drawStrokes(canvas, strokes);
+      } else {
+        if (!activeNotebookAnnotations.length) return show('Nothing to undo on this page yet.');
+        activeNotebookAnnotations.pop();
+        drawStrokes(notebookCanvas, activeNotebookAnnotations);
+      }
+    }
+
+    function saveActiveMarks() {
+      if (activeSurface === 'pdf' && activePdfItem) {
+        saveAnnotations(activePdfItem.id, activePdfAnnotations);
+        show('PDF marks saved in this browser.');
+      } else if (activeNotebookItem) {
+        saveAnnotations(`notebook:${activeNotebookItem.id}`, activeNotebookAnnotations);
+        show('Handwritten page saved in this browser.');
+      }
+    }
+
+    function closeEditors() {
+      document.querySelector('#reader').hidden = true;
+      document.querySelector('#notebook-editor').hidden = true;
+      document.querySelector('#pdf-frame').src = '';
+      pdfViewer.innerHTML = '';
     }
 
     document.querySelector('#import').addEventListener('click', () => document.querySelector('#file-input').click());
@@ -362,17 +609,25 @@
         openNotebook(event.target.closest('.card'));
       }
     });
-    document.querySelector('#close-reader').addEventListener('click', () => {
-      document.querySelector('#reader').hidden = true;
-      document.querySelector('#pdf-frame').src = '';
-    });
+    document.querySelectorAll('[data-draw-tool]').forEach(button => button.addEventListener('click', () => {
+      drawingTool = button.dataset.drawTool;
+      document.querySelectorAll('[data-draw-tool]').forEach(toolButton => toolButton.classList.toggle('active', toolButton.dataset.drawTool === drawingTool));
+    }));
+    bindDrawingCanvas(notebookCanvas, () => activeNotebookAnnotations, () => {}, 1);
+    document.querySelector('#pdf-undo').addEventListener('click', () => { activeSurface = 'pdf'; undoActiveStroke(); });
+    document.querySelector('#notebook-undo').addEventListener('click', () => { activeSurface = 'notebook'; undoActiveStroke(); });
+    document.querySelector('#pdf-save').addEventListener('click', saveActiveMarks);
+    document.querySelector('#notebook-save').addEventListener('click', saveActiveMarks);
+    document.querySelector('#close-reader').addEventListener('click', closeEditors);
+    document.querySelector('#close-notebook').addEventListener('click', closeEditors);
+    window.addEventListener('resize', () => { if (!document.querySelector('#notebook-editor').hidden) resizeNotebookCanvas(); });
     window.addEventListener('keydown', event => {
-      if (event.key === 'Escape' && !document.querySelector('#reader').hidden) document.querySelector('#close-reader').click();
+      if (event.key === 'Escape' && (!document.querySelector('#reader').hidden || !document.querySelector('#notebook-editor').hidden)) closeEditors();
     });
     (async () => {
       db = await openDB();
       const saved = await storedDocuments();
-      saved.reverse().forEach(item => { item.url = URL.createObjectURL(item.file); notebooks.unshift(item); });
+      saved.reverse().forEach(item => { if (item.file) item.url = URL.createObjectURL(item.file); notebooks.unshift(item); });
       render();
     })();
   </script>
