@@ -1,0 +1,57 @@
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PaperLeaf Web</title>
+  <style>
+    :root { color-scheme: light; --ink:#17213a; --muted:#6d7487; --blue:#3f65d8; --wash:#f4f6fb; }
+    * { box-sizing:border-box; } body { margin:0; font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; color:var(--ink); background:var(--wash); }
+    button,input { font:inherit; } button { border:0; border-radius:12px; padding:12px 16px; cursor:pointer; color:var(--ink); background:#e9edf8; font-weight:700; } button:hover { filter:brightness(.98); transform:translateY(-1px); } button.primary { color:#fff; background:var(--blue); box-shadow:0 8px 18px #3f65d833; }
+    .shell { max-width:1160px; margin:auto; padding:28px 30px 48px; } header,.brand,.actions,.section-head { display:flex; align-items:center; } header,.section-head { justify-content:space-between; gap:20px; } header { margin-bottom:28px; } .brand { gap:12px; } .leaf,.hero-icon { display:grid; place-items:center; } .leaf { width:42px; height:42px; border-radius:13px; color:#fff; background:linear-gradient(135deg,#3551ac,#7898ef); font-size:22px; box-shadow:0 10px 24px #4968c433; } h1,h2,p { margin:0; } h1,h2 { letter-spacing:-.03em; } h1 { font-size:23px; } h2 { font-size:25px; } .subtle,.count { color:var(--muted); font-size:13px; } .actions { gap:10px; }
+    .hero { display:flex; align-items:center; gap:22px; min-height:154px; padding:26px 30px; color:#fff; border-radius:26px; background:linear-gradient(120deg,#314fae,#7693ed); box-shadow:0 18px 40px #4968c426; } .hero-icon { flex:0 0 78px; height:78px; border-radius:22px; background:#ffffff2b; font-size:38px; } .hero h2 { color:#fff; margin-bottom:9px; } .hero p { max-width:720px; color:#eef2ff; line-height:1.5; }
+    .section-head { align-items:flex-end; margin:31px 0 16px; } .section-head h2 { margin-bottom:5px; } .search { width:100%; max-width:360px; padding:13px 16px; border:1px solid #dfe4f0; border-radius:13px; outline:0; color:var(--ink); background:#fff; } .search:focus { border-color:#7b96e8; box-shadow:0 0 0 4px #7b96e822; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:18px; } .card { padding:12px; border:1px solid #e7eaf2; border-radius:21px; background:#fff; box-shadow:0 8px 24px #26345b0b; transition:.18s ease; cursor:pointer; } .card:hover { transform:translateY(-3px); box-shadow:0 14px 28px #26345b18; } .cover { display:grid; place-items:center; height:160px; overflow:hidden; position:relative; border-radius:16px; background:linear-gradient(135deg,#f3f6ff,#e0e7fc); } .cover::before { content:""; position:absolute; inset:28px 34px; background:repeating-linear-gradient(to bottom,transparent 0 16px,#4770c925 17px 18px); } .cover span { position:relative; z-index:1; display:grid; place-items:center; width:64px; height:64px; border-radius:20px; color:#3657b1; background:#ffffffcc; box-shadow:0 8px 18px #3657b126; font-size:30px; } .meta { padding:12px 2px 3px; } .meta strong { display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:16px; } .meta small { display:block; margin-top:5px; color:var(--muted); } .empty { grid-column:1/-1; padding:52px 20px; text-align:center; border:1px dashed #cfd6e8; border-radius:20px; color:var(--muted); background:#ffffff80; }
+    .reader { position:fixed; inset:0; z-index:5; display:flex; flex-direction:column; background:#202536; } .reader[hidden] { display:none; } .reader-bar { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 18px; color:#fff; background:#17213a; } .reader-bar button { color:#fff; background:#ffffff1c; } iframe { flex:1; width:100%; border:0; background:#fff; } #toast { position:fixed; left:50%; bottom:24px; z-index:10; transform:translate(-50%,20px); opacity:0; pointer-events:none; padding:13px 17px; border-radius:13px; color:#fff; background:#17213a; box-shadow:0 12px 26px #17213a33; transition:.2s ease; } #toast.show { transform:translate(-50%,0); opacity:1; }
+    @media (max-width:620px) { .shell { padding:20px 16px 36px; } header { align-items:flex-start; flex-direction:column; } .actions { width:100%; } .actions button { flex:1; } .hero { padding:22px; } .hero-icon { flex-basis:58px; height:58px; font-size:28px; } .section-head { align-items:stretch; flex-direction:column; } .search { max-width:none; } }
+  </style>
+</head>
+<body>
+  <main class="shell" id="library">
+    <header><div class="brand"><div class="leaf">✎</div><div><h1>PaperLeaf</h1><p class="subtle">Your calm paper library</p></div></div><div class="actions"><button id="import">＋ Import PDFs</button><button class="primary" id="new">＋ New notebook</button></div></header>
+    <section class="hero"><div class="hero-icon">✎</div><div><h2>A calmer place for your notes</h2><p>Write, organize, and mark up PDFs. Bring in as many documents as you need from your iPad, tablet, or computer.</p></div></section>
+    <div class="section-head"><div><h2>My notebooks</h2><span class="count" id="count">6 items</span></div><input id="search" class="search" aria-label="Search notebooks" placeholder="Search notebooks…"></div>
+    <section id="grid" class="grid"><article class="card" data-id=""><div class="cover"><span>✎</span></div><div class="meta"><strong>Human Anatomy</strong><small>248 pages · PDF</small></div></article><article class="card" data-id=""><div class="cover"><span>✎</span></div><div class="meta"><strong>Organic Chemistry</strong><small>182 pages · PDF</small></div></article><article class="card" data-id=""><div class="cover"><span>✎</span></div><div class="meta"><strong>Research Notes</strong><small>32 pages · notebook</small></div></article><article class="card" data-id=""><div class="cover"><span>✎</span></div><div class="meta"><strong>Clinical Cases</strong><small>96 pages · PDF</small></div></article><article class="card" data-id=""><div class="cover"><span>✎</span></div><div class="meta"><strong>Lecture Notes</strong><small>74 pages · notebook</small></div></article><article class="card" data-id=""><div class="cover"><span>✎</span></div><div class="meta"><strong>Pathology Review</strong><small>311 pages · PDF</small></div></article></section>
+  </main>
+  <section class="reader" id="reader" hidden=""><div class="reader-bar"><strong id="reader-title">PDF</strong><button id="close-reader">Back to library</button></div><iframe id="pdf-frame" title="PDF reader"></iframe></section>
+  <input id="file-input" type="file" accept="application/pdf,.pdf" multiple="" hidden="">
+  <div id="toast" role="status"></div>
+  <script>
+    const seed = [
+      { title:"Human Anatomy", detail:"248 pages · PDF" }, { title:"Organic Chemistry", detail:"182 pages · PDF" },
+      { title:"Research Notes", detail:"32 pages · notebook" }, { title:"Clinical Cases", detail:"96 pages · PDF" },
+      { title:"Lecture Notes", detail:"74 pages · notebook" }, { title:"Pathology Review", detail:"311 pages · PDF" }
+    ];
+    let notebooks = [...seed], db;
+    const grid = document.querySelector('#grid'), count = document.querySelector('#count'), search = document.querySelector('#search'), toast = document.querySelector('#toast');
+    const escapeHTML = value => value.replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char]));
+    function render() {
+      const query = search.value.trim().toLowerCase();
+      const visible = notebooks.filter(item => item.title.toLowerCase().includes(query));
+      count.textContent = `${visible.length} item${visible.length === 1 ? '' : 's'}`;
+      grid.innerHTML = visible.length ? visible.map(item => `<article class="card" data-id="${item.id || ''}"><div class="cover"><span>${item.file ? '▤' : '✎'}</span></div><div class="meta"><strong>${escapeHTML(item.title)}</strong><small>${escapeHTML(item.detail)}</small></div></article>`).join('') : '<div class="empty">No notebooks match your search.</div>';
+    }
+    function show(message) { toast.textContent = message; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2600); }
+    function openDB() { return new Promise(resolve => { if (!('indexedDB' in window)) return resolve(null); const request = indexedDB.open('paperleaf-web', 1); request.onupgradeneeded = () => request.result.createObjectStore('documents', { keyPath:'id' }); request.onsuccess = () => resolve(request.result); request.onerror = () => resolve(null); }); }
+    function storedDocuments() { return new Promise(resolve => { if (!db) return resolve([]); const request = db.transaction('documents').objectStore('documents').getAll(); request.onsuccess = () => resolve(request.result || []); request.onerror = () => resolve([]); }); }
+    function saveDocument(document) { if (!db) return; db.transaction('documents', 'readwrite').objectStore('documents').put(document); }
+    function addFiles(files) { [...files].forEach(file => { const id = crypto.randomUUID(); const item = { id, title:file.name.replace(/\.pdf$/i, ''), detail:'PDF · imported in this browser', file }; saveDocument(item); item.url = URL.createObjectURL(file); notebooks.unshift(item); }); render(); show(`${files.length} PDF${files.length === 1 ? '' : 's'} added to your library.`); }
+    document.querySelector('#import').addEventListener('click', () => document.querySelector('#file-input').click());
+    document.querySelector('#file-input').addEventListener('change', event => { if (event.target.files.length) addFiles(event.target.files); event.target.value = ''; });
+    document.querySelector('#new').addEventListener('click', () => { notebooks.unshift({ id:crypto.randomUUID(), title:'Untitled Notebook', detail:'0 pages · notebook' }); render(); show('New notebook added.'); });
+    search.addEventListener('input', render);
+    grid.addEventListener('click', event => { const card = event.target.closest('.card'); const item = notebooks.find(notebook => notebook.id === card?.dataset.id); if (!item) return; if (!item.file) return show('Handwriting editor is next for the web version.'); document.querySelector('#reader-title').textContent = item.title; document.querySelector('#pdf-frame').src = item.url; document.querySelector('#reader').hidden = false; });
+    document.querySelector('#close-reader').addEventListener('click', () => { document.querySelector('#reader').hidden = true; document.querySelector('#pdf-frame').src = ''; });
+    (async () => { db = await openDB(); const saved = await storedDocuments(); saved.forEach(item => { item.url = URL.createObjectURL(item.file); notebooks.unshift(item); }); render(); })();
+  </script>
+
+
+</body><div id="codex-browser-sidebar-comments-root" style="position: fixed; inset: 0px; pointer-events: none; z-index: 2147483647;"></div></html>
