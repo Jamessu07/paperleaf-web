@@ -423,11 +423,10 @@
     function openDB() {
       return new Promise(resolve => {
         if (!('indexedDB' in window)) return resolve(null);
-        const request = indexedDB.open('paperleaf-web', 2);
+        const request = indexedDB.open('paperleaf-web');
         request.onupgradeneeded = () => {
           const database = request.result;
           if (!database.objectStoreNames.contains('documents')) database.createObjectStore('documents', { keyPath: 'id' });
-          if (!database.objectStoreNames.contains('annotations')) database.createObjectStore('annotations', { keyPath: 'id' });
         };
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => resolve(null);
@@ -449,17 +448,13 @@
     }
 
     function loadAnnotations(id) {
-      return new Promise(resolve => {
-        if (!db || !db.objectStoreNames.contains('annotations')) return resolve(null);
-        const request = db.transaction('annotations').objectStore('annotations').get(annotationKey(id));
-        request.onsuccess = () => resolve(request.result?.pages || null);
-        request.onerror = () => resolve(null);
-      });
+      try { return Promise.resolve(JSON.parse(localStorage.getItem(annotationKey(id)) || 'null')); }
+      catch { return Promise.resolve(null); }
     }
 
     function saveAnnotations(id, pages) {
-      if (!db || !db.objectStoreNames.contains('annotations')) return;
-      db.transaction('annotations', 'readwrite').objectStore('annotations').put({ id: annotationKey(id), pages });
+      try { localStorage.setItem(annotationKey(id), JSON.stringify(pages)); }
+      catch { show('This browser could not save the marks.'); }
     }
 
     function addFiles(files) {
