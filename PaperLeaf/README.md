@@ -1,5 +1,11 @@
 # PaperLeaf for iPad
 
+## Web version
+
+The `preview/index.html` file is now a browser-first PaperLeaf MVP. It can import multiple PDFs at once, search the library, open PDFs in a reader view, and keep imported files in the current browser using IndexedDB. It is designed for static hosting and works on iPad Safari, desktop browsers, and tablets.
+
+This first web version is not cloud sync yet: documents remain in the browser where they were imported. Add authentication plus object storage when the same library needs to follow a user across devices.
+
 PaperLeaf is an original, offline-first iPad note-taking starter app for handwriting, highlighting, and PDF books. It uses Apple's PencilKit for writing tools and PDFKit for PDF import. It does not use Goodnotes code, branding, or account services.
 
 ## Included in this starter
