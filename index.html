@@ -1,57 +1,380 @@
-<html lang="en"><head>
+<!doctype html>
+<html lang="en">
+<head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PaperLeaf Web</title>
+  <meta name="theme-color" content="#fffcf4">
+  <link rel="icon" type="image/png" href="assets/paperleaf-logo.png">
+  <link rel="apple-touch-icon" href="assets/paperleaf-logo.png">
+  <title>PaperLeaf — your notebook shelf</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root { color-scheme: light; --ink:#17213a; --muted:#6d7487; --blue:#3f65d8; --wash:#f4f6fb; }
-    * { box-sizing:border-box; } body { margin:0; font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif; color:var(--ink); background:var(--wash); }
-    button,input { font:inherit; } button { border:0; border-radius:12px; padding:12px 16px; cursor:pointer; color:var(--ink); background:#e9edf8; font-weight:700; } button:hover { filter:brightness(.98); transform:translateY(-1px); } button.primary { color:#fff; background:var(--blue); box-shadow:0 8px 18px #3f65d833; }
-    .shell { max-width:1160px; margin:auto; padding:28px 30px 48px; } header,.brand,.actions,.section-head { display:flex; align-items:center; } header,.section-head { justify-content:space-between; gap:20px; } header { margin-bottom:28px; } .brand { gap:12px; } .leaf,.hero-icon { display:grid; place-items:center; } .leaf { width:42px; height:42px; border-radius:13px; color:#fff; background:linear-gradient(135deg,#3551ac,#7898ef); font-size:22px; box-shadow:0 10px 24px #4968c433; } h1,h2,p { margin:0; } h1,h2 { letter-spacing:-.03em; } h1 { font-size:23px; } h2 { font-size:25px; } .subtle,.count { color:var(--muted); font-size:13px; } .actions { gap:10px; }
-    .hero { display:flex; align-items:center; gap:22px; min-height:154px; padding:26px 30px; color:#fff; border-radius:26px; background:linear-gradient(120deg,#314fae,#7693ed); box-shadow:0 18px 40px #4968c426; } .hero-icon { flex:0 0 78px; height:78px; border-radius:22px; background:#ffffff2b; font-size:38px; } .hero h2 { color:#fff; margin-bottom:9px; } .hero p { max-width:720px; color:#eef2ff; line-height:1.5; }
-    .section-head { align-items:flex-end; margin:31px 0 16px; } .section-head h2 { margin-bottom:5px; } .search { width:100%; max-width:360px; padding:13px 16px; border:1px solid #dfe4f0; border-radius:13px; outline:0; color:var(--ink); background:#fff; } .search:focus { border-color:#7b96e8; box-shadow:0 0 0 4px #7b96e822; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:18px; } .card { padding:12px; border:1px solid #e7eaf2; border-radius:21px; background:#fff; box-shadow:0 8px 24px #26345b0b; transition:.18s ease; cursor:pointer; } .card:hover { transform:translateY(-3px); box-shadow:0 14px 28px #26345b18; } .cover { display:grid; place-items:center; height:160px; overflow:hidden; position:relative; border-radius:16px; background:linear-gradient(135deg,#f3f6ff,#e0e7fc); } .cover::before { content:""; position:absolute; inset:28px 34px; background:repeating-linear-gradient(to bottom,transparent 0 16px,#4770c925 17px 18px); } .cover span { position:relative; z-index:1; display:grid; place-items:center; width:64px; height:64px; border-radius:20px; color:#3657b1; background:#ffffffcc; box-shadow:0 8px 18px #3657b126; font-size:30px; } .meta { padding:12px 2px 3px; } .meta strong { display:block; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:16px; } .meta small { display:block; margin-top:5px; color:var(--muted); } .empty { grid-column:1/-1; padding:52px 20px; text-align:center; border:1px dashed #cfd6e8; border-radius:20px; color:var(--muted); background:#ffffff80; }
-    .reader { position:fixed; inset:0; z-index:5; display:flex; flex-direction:column; background:#202536; } .reader[hidden] { display:none; } .reader-bar { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 18px; color:#fff; background:#17213a; } .reader-bar button { color:#fff; background:#ffffff1c; } iframe { flex:1; width:100%; border:0; background:#fff; } #toast { position:fixed; left:50%; bottom:24px; z-index:10; transform:translate(-50%,20px); opacity:0; pointer-events:none; padding:13px 17px; border-radius:13px; color:#fff; background:#17213a; box-shadow:0 12px 26px #17213a33; transition:.2s ease; } #toast.show { transform:translate(-50%,0); opacity:1; }
-    @media (max-width:620px) { .shell { padding:20px 16px 36px; } header { align-items:flex-start; flex-direction:column; } .actions { width:100%; } .actions button { flex:1; } .hero { padding:22px; } .hero-icon { flex-basis:58px; height:58px; font-size:28px; } .section-head { align-items:stretch; flex-direction:column; } .search { max-width:none; } }
+    :root {
+      color-scheme: light;
+      --cream: #fffcf4;
+      --paper: #ffffff;
+      --orange: #ff6115;
+      --orange-deep: #c9470c;
+      --ink: #33231e;
+      --muted: #776861;
+      --line: #eadfd5;
+      --mint: #dff4e9;
+      --sky: #e2f1ff;
+      --lilac: #eee6ff;
+      --sun: #ffe6aa;
+      --shadow: 0 18px 40px rgba(91, 52, 30, .11);
+      --shadow-small: 0 10px 24px rgba(91, 52, 30, .08);
+    }
+
+    * { box-sizing: border-box; }
+    html { min-width: 320px; background: var(--cream); }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 14%, rgba(255, 97, 21, .08) 0 2px, transparent 3px),
+        radial-gradient(circle at 92% 74%, rgba(255, 97, 21, .07) 0 2px, transparent 3px),
+        var(--cream);
+      font-family: "Nunito", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    button, input { -webkit-tap-highlight-color: transparent; }
+    ::selection { color: var(--cream); background: var(--orange); }
+    :focus-visible { outline: 3px solid var(--orange); outline-offset: 4px; }
+
+    .icon { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; flex: 0 0 auto; }
+    .icon-sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+    h1, h2, h3, p { margin: 0; }
+    h1, h2, h3 { font-family: "Fredoka", ui-rounded, "Nunito", sans-serif; letter-spacing: -.025em; }
+
+    .shell { width: min(1180px, 100%); margin: 0 auto; padding: 26px 28px 44px; }
+    .site-header, .brand, .header-actions, .status-pill, .button-content, .section-heading, .search-field, .local-note { display: flex; align-items: center; }
+    .site-header { justify-content: space-between; gap: 24px; margin-bottom: 30px; }
+    .brand { gap: 12px; color: var(--ink); text-decoration: none; }
+    .brand-mark { display: grid; place-items: center; width: 46px; height: 46px; color: #fff; background: var(--orange); border-radius: 16px 16px 16px 7px; box-shadow: var(--shadow-small); transform: rotate(-4deg); }
+    .brand-mark .icon { width: 27px; height: 27px; stroke-width: 1.7; }
+    .brand-copy { display: grid; gap: 2px; }
+    .brand-name { font: 600 23px/1 "Fredoka", ui-rounded, sans-serif; letter-spacing: -.03em; }
+    .brand-subtitle { color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .02em; }
+    .header-actions { gap: 12px; }
+    .status-pill { gap: 7px; min-height: 38px; padding: 0 12px; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); background: rgba(255, 255, 255, .6); font-size: 12px; font-weight: 800; letter-spacing: .02em; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #49a878; box-shadow: 0 0 0 4px rgba(73, 168, 120, .14); }
+
+    button { min-height: 44px; padding: 0 16px; border: 1px solid transparent; border-radius: 14px; color: var(--ink); background: #f4ece4; font-size: 14px; font-weight: 800; transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease; }
+    button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(91, 52, 30, .1); }
+    button:active { transform: translateY(0); box-shadow: none; }
+    button.primary { color: #fff; background: var(--orange); box-shadow: 0 9px 20px rgba(255, 97, 21, .24); }
+    button.primary:hover { background: #f2570d; box-shadow: 0 12px 24px rgba(255, 97, 21, .28); }
+    .button-content { justify-content: center; gap: 8px; }
+    .button-content .icon { width: 18px; height: 18px; }
+
+    .hero { position: relative; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(280px, .9fr); min-height: 278px; overflow: hidden; padding: 34px 38px; border-radius: 32px; color: var(--ink); background: var(--orange); box-shadow: var(--shadow); isolation: isolate; }
+    .hero::before, .hero::after { position: absolute; z-index: -1; content: ""; border-radius: 50%; border: 1px solid rgba(255, 255, 255, .24); }
+    .hero::before { width: 300px; height: 300px; right: 210px; bottom: -202px; }
+    .hero::after { width: 390px; height: 390px; right: 134px; bottom: -260px; }
+    .hero-copy { display: flex; flex-direction: column; justify-content: center; max-width: 570px; }
+    .hero h1 { max-width: 570px; font-size: clamp(2.5rem, 5vw, 4.75rem); line-height: .98; }
+    .hero-copy > p { max-width: 550px; margin-top: 18px; color: #3e1b10; font-size: 16px; line-height: 1.6; }
+    .hero-note { display: flex; align-items: center; gap: 9px; width: fit-content; margin-top: 22px; padding-top: 13px; border-top: 1px solid rgba(51, 35, 30, .22); color: #3e1b10; font-size: 13px; font-weight: 800; }
+    .hero-note .icon { width: 17px; height: 17px; }
+    .hero-art { position: relative; min-height: 214px; }
+    .paper-sheet { position: absolute; width: 180px; height: 218px; right: 48px; top: 1px; padding: 31px 23px; border: 1px solid rgba(91, 52, 30, .12); border-radius: 12px 19px 16px 12px; background: #fffdf8; box-shadow: 0 18px 26px rgba(112, 46, 12, .16); transform: rotate(6deg); }
+    .paper-sheet.back { right: 22px; top: 14px; background: #ffe9d1; transform: rotate(-5deg); }
+    .paper-sheet::before { position: absolute; top: 22px; right: 22px; width: 25px; height: 25px; content: ""; border-radius: 50%; background: var(--orange); opacity: .14; }
+    .paper-line { height: 5px; margin-bottom: 15px; border-radius: 5px; background: #eadbd0; }
+    .paper-line.short { width: 58%; }
+    .paper-check { display: flex; align-items: center; gap: 8px; margin-top: 20px; color: var(--orange-deep); font-size: 11px; font-weight: 800; }
+    .paper-check span { display: grid; place-items: center; width: 18px; height: 18px; border: 2px solid var(--orange); border-radius: 5px; }
+    .paper-check .icon { width: 12px; height: 12px; stroke-width: 2.7; }
+    .hero-spark { position: absolute; right: 4px; bottom: 18px; display: grid; place-items: center; width: 58px; height: 58px; border: 1px solid rgba(51, 35, 30, .18); border-radius: 50%; background: #ffd99d; transform: rotate(8deg); }
+    .hero-spark .icon { width: 27px; height: 27px; }
+
+    .library-section { padding-top: 49px; }
+    .section-head { justify-content: space-between; gap: 24px; margin-bottom: 20px; }
+    .section-heading { align-items: baseline; gap: 12px; flex-wrap: wrap; }
+    .section-heading h2 { font-size: 32px; line-height: 1; }
+    .count { color: var(--muted); font-size: 13px; font-weight: 800; }
+    .section-description { margin-top: 9px; color: var(--muted); font-size: 14px; }
+    .search-field { width: min(100%, 310px); gap: 9px; padding: 0 14px; border: 1px solid var(--line); border-radius: 14px; background: rgba(255, 255, 255, .75); transition: border-color .2s ease, box-shadow .2s ease; }
+    .search-field:focus-within { border-color: var(--orange); box-shadow: 0 0 0 4px rgba(255, 97, 21, .13); }
+    .search-field .icon { color: var(--orange-deep); width: 18px; height: 18px; }
+    .search-field input { width: 100%; min-width: 0; height: 46px; border: 0; outline: 0; color: var(--ink); background: transparent; font-size: 14px; }
+    .search-field input::placeholder { color: #968982; }
+
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+    .card { padding: 12px; border: 1px solid var(--line); border-radius: 24px; background: var(--paper); box-shadow: var(--shadow-small); cursor: pointer; transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
+    .card:hover { border-color: #f1c0a4; box-shadow: 0 18px 34px rgba(91, 52, 30, .14); transform: translateY(-5px) rotate(.25deg); }
+    .card:focus-visible { border-color: var(--orange); }
+    .cover { position: relative; display: grid; place-items: center; height: 188px; overflow: hidden; border-radius: 17px; background: var(--cover, var(--sky)); }
+    .cover::before { position: absolute; top: -48px; right: -42px; width: 150px; height: 150px; content: ""; border: 1px solid rgba(51, 35, 30, .12); border-radius: 50%; box-shadow: 0 0 0 22px rgba(255, 255, 255, .15), 0 0 0 44px rgba(255, 255, 255, .1); }
+    .cover::after { position: absolute; right: 0; bottom: 0; width: 0; height: 0; content: ""; border-top: 44px solid transparent; border-right: 44px solid rgba(255, 255, 255, .48); }
+    .page-lines { position: absolute; top: 34px; left: 30px; right: 30px; display: grid; gap: 17px; opacity: .72; }
+    .page-lines span { display: block; height: 2px; border-radius: 2px; background: rgba(51, 35, 30, .16); }
+    .page-lines span:nth-child(2) { width: 82%; }
+    .page-lines span:nth-child(4) { width: 68%; }
+    .cover-badge { position: absolute; top: 14px; left: 14px; display: inline-flex; align-items: center; gap: 5px; padding: 6px 9px; border: 1px solid rgba(51, 35, 30, .12); border-radius: 999px; color: #5d4031; background: rgba(255, 255, 255, .63); font-size: 10px; font-weight: 900; letter-spacing: .08em; }
+    .cover-badge .icon { width: 13px; height: 13px; stroke-width: 2; }
+    .cover-icon { position: relative; z-index: 1; display: grid; place-items: center; width: 70px; height: 70px; border: 1px solid rgba(51, 35, 30, .1); border-radius: 22px; color: var(--orange-deep); background: rgba(255, 255, 255, .76); box-shadow: 0 10px 20px rgba(91, 52, 30, .1); transform: rotate(-5deg); }
+    .cover-icon .icon { width: 34px; height: 34px; stroke-width: 1.7; }
+    .meta { padding: 14px 4px 3px; }
+    .meta-top { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 11px; font-weight: 800; }
+    .meta strong { display: block; margin-top: 7px; overflow: hidden; font: 600 21px/1.1 "Fredoka", ui-rounded, sans-serif; white-space: nowrap; text-overflow: ellipsis; }
+    .meta small { display: block; margin-top: 8px; color: var(--muted); font-size: 12px; }
+    .empty { grid-column: 1 / -1; display: grid; justify-items: center; gap: 12px; padding: 62px 20px; border: 1px dashed #d9c7b8; border-radius: 22px; color: var(--muted); background: rgba(255, 255, 255, .55); text-align: center; }
+    .empty-icon { display: grid; place-items: center; width: 58px; height: 58px; border-radius: 20px; color: var(--orange-deep); background: var(--sun); }
+    .empty-icon .icon { width: 28px; height: 28px; }
+    .empty strong { color: var(--ink); font: 600 23px/1 "Fredoka", ui-rounded, sans-serif; }
+    .empty p { max-width: 360px; font-size: 14px; line-height: 1.5; }
+    .empty button { margin-top: 6px; }
+
+    .local-note { justify-content: center; gap: 7px; margin: 36px 0 0; color: var(--muted); font-size: 12px; font-weight: 700; }
+    .local-note .icon { width: 15px; height: 15px; color: var(--orange-deep); }
+    .reader { position: fixed; inset: 0; z-index: 5; display: flex; flex-direction: column; background: #2d211d; }
+    .reader[hidden] { display: none; }
+    .reader-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; color: #fff; background: #3b2922; }
+    .reader-bar strong { font: 500 20px "Fredoka", ui-rounded, sans-serif; }
+    .reader-bar button { color: #fff; background: rgba(255, 255, 255, .12); }
+    .reader-bar button:hover { background: rgba(255, 255, 255, .2); }
+    iframe { flex: 1; width: 100%; border: 0; background: #fff; }
+    #toast { position: fixed; left: 50%; bottom: 24px; z-index: 10; display: flex; align-items: center; gap: 8px; max-width: min(90vw, 420px); padding: 13px 17px; border-radius: 14px; color: #fff; background: #3b2922; box-shadow: var(--shadow); font-size: 13px; font-weight: 800; opacity: 0; pointer-events: none; transform: translate(-50%, 20px); transition: opacity .2s ease, transform .2s ease; }
+    #toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+    .tone-mint { --cover: var(--mint); }
+    .tone-sky { --cover: var(--sky); }
+    .tone-lilac { --cover: var(--lilac); }
+    .tone-sun { --cover: var(--sun); }
+    .tone-peach { --cover: #ffe0cf; }
+
+    @media (max-width: 920px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .hero { grid-template-columns: minmax(0, 1fr) 280px; padding-left: 30px; padding-right: 24px; }
+      .paper-sheet { right: 34px; }
+      .paper-sheet.back { right: 9px; }
+    }
+
+    @media (max-width: 680px) {
+      .shell { padding: 20px 16px 34px; }
+      .site-header { align-items: flex-start; flex-direction: column; gap: 18px; }
+      .header-actions { justify-content: space-between; width: 100%; }
+      .header-actions .status-pill { display: none; }
+      .header-actions button { flex: 1; }
+      .hero { display: block; min-height: 0; padding: 28px 24px 24px; }
+      .hero h1 { max-width: 470px; font-size: clamp(2.55rem, 13vw, 4.1rem); }
+      .hero-art { min-height: 188px; margin-top: 6px; }
+      .paper-sheet { right: 42px; top: 10px; }
+      .paper-sheet.back { right: 18px; top: 23px; }
+      .hero-spark { right: 2px; bottom: 4px; }
+      .library-section { padding-top: 39px; }
+      .section-head { align-items: stretch; flex-direction: column; }
+      .search-field { width: 100%; }
+      .grid { grid-template-columns: 1fr; gap: 16px; }
+      .cover { height: 200px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+      .brand-mark, .paper-sheet, .paper-sheet.back, .hero-spark, .cover-icon { transform: none; }
+    }
   </style>
 </head>
 <body>
+  <svg class="icon-sprite" aria-hidden="true" focusable="false">
+    <symbol id="icon-leaf" viewBox="0 0 24 24"><path d="M20.8 3.2C13.6 3.1 7.8 5 5 9.2c-2.1 3.1-1.5 6.6.9 8.1 2.4 1.5 5.7.4 7.8-2.3 2.6-3.3 3-7.8 7.1-11.8Z"/><path d="M3.5 21c2.8-5.2 7-8.8 12.5-11.4"/></symbol>
+    <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="icon-upload" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M5 20h14"/></symbol>
+    <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></symbol>
+    <symbol id="icon-notebook" viewBox="0 0 24 24"><path d="M6 4.5h11.2A1.8 1.8 0 0 1 19 6.3v13.2H7.4A2.4 2.4 0 0 1 5 17.1V5.5a1 1 0 0 1 1-1Z"/><path d="M7.5 4.5v14.8M9.5 8h6M9.5 11h6M9.5 14h4"/></symbol>
+    <symbol id="icon-file-text" viewBox="0 0 24 24"><path d="M6.5 3.5h7l4 4v13h-11Z"/><path d="M13.5 3.5v4h4M9.5 12h5M9.5 15h5"/></symbol>
+    <symbol id="icon-pencil" viewBox="0 0 24 24"><path d="m14.5 5.5 4 4M5 19l1.1-4.1L16.8 4.2a1.8 1.8 0 0 1 2.5 0l.5.5a1.8 1.8 0 0 1 0 2.5L9.1 18.9Z"/><path d="M5 19h4"/></symbol>
+    <symbol id="icon-sparkle" viewBox="0 0 24 24"><path d="m12 3 1.2 5.8L19 10l-5.8 1.2L12 17l-1.2-5.8L5 10l5.8-1.2Z"/><path d="m19 16 .5 2.5L22 19l-2.5.5L19 22l-.5-2.5L16 19l2.5-.5Z"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></symbol>
+  </svg>
+
   <main class="shell" id="library">
-    <header><div class="brand"><div class="leaf">✎</div><div><h1>PaperLeaf</h1><p class="subtle">Your calm paper library</p></div></div><div class="actions"><button id="import">＋ Import PDFs</button><button class="primary" id="new">＋ New notebook</button></div></header>
-    <section class="hero"><div class="hero-icon">✎</div><div><h2>A calmer place for your notes</h2><p>Write, organize, and mark up PDFs. Bring in as many documents as you need from your iPad, tablet, or computer.</p></div></section>
-    <div class="section-head"><div><h2>My notebooks</h2><span class="count" id="count">6 items</span></div><input id="search" class="search" aria-label="Search notebooks" placeholder="Search notebooks…"></div>
-    <section id="grid" class="grid"><article class="card" data-id=""><div class="cover"><span>✎</span></div><div class="meta"><strong>Human Anatomy</strong><small>248 pages · PDF</small></div></article><article class="card" data-id=""><div class="cover"><span>✎</span></div><div class="meta"><strong>Organic Chemistry</strong><small>182 pages · PDF</small></div></article><article class="card" data-id=""><div class="cover"><span>✎</span></div><div class="meta"><strong>Research Notes</strong><small>32 pages · notebook</small></div></article><article class="card" data-id=""><div class="cover"><span>✎</span></div><div class="meta"><strong>Clinical Cases</strong><small>96 pages · PDF</small></div></article><article class="card" data-id=""><div class="cover"><span>✎</span></div><div class="meta"><strong>Lecture Notes</strong><small>74 pages · notebook</small></div></article><article class="card" data-id=""><div class="cover"><span>✎</span></div><div class="meta"><strong>Pathology Review</strong><small>311 pages · PDF</small></div></article></section>
+    <header class="site-header">
+      <a class="brand" href="#library" aria-label="PaperLeaf home">
+        <span class="brand-mark"><svg class="icon"><use href="#icon-leaf"></use></svg></span>
+        <span class="brand-copy"><span class="brand-name">PaperLeaf</span><span class="brand-subtitle">your notebook shelf</span></span>
+      </a>
+      <div class="header-actions">
+        <span class="status-pill"><span class="status-dot"></span> local library</span>
+        <button id="import" type="button"><span class="button-content"><svg class="icon"><use href="#icon-upload"></use></svg>Import PDFs</span></button>
+        <button class="primary" id="new" type="button"><span class="button-content"><svg class="icon"><use href="#icon-plus"></use></svg>New notebook</span></button>
+      </div>
+    </header>
+
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <h1 id="hero-title">Make room for the next good idea.</h1>
+        <p>A cozy home for notebooks, reading notes, and the little thoughts that deserve more than a loose scrap of paper.</p>
+        <div class="hero-note"><svg class="icon"><use href="#icon-sparkle"></use></svg><span>Made for margins, messy thoughts, and one-more-idea moments.</span></div>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="paper-sheet back"></div>
+        <div class="paper-sheet">
+          <div class="paper-line"></div><div class="paper-line"></div><div class="paper-line short"></div>
+          <div class="paper-check"><span><svg class="icon"><use href="#icon-check"></use></svg></span> keep going</div>
+          <div class="paper-line"></div><div class="paper-line short"></div>
+        </div>
+        <div class="hero-spark"><svg class="icon"><use href="#icon-leaf"></use></svg></div>
+      </div>
+    </section>
+
+    <section class="library-section" aria-labelledby="library-title">
+      <div class="section-head">
+        <div>
+          <div class="section-heading"><h2 id="library-title">Your notebooks</h2><span class="count" id="count"></span></div>
+          <p class="section-description">A little shelf for everything you are working through.</p>
+        </div>
+        <label class="search-field"><svg class="icon"><use href="#icon-search"></use></svg><input id="search" aria-label="Search notebooks" placeholder="Search your shelf" autocomplete="off"></label>
+      </div>
+      <section id="grid" class="grid" aria-live="polite"></section>
+    </section>
+
+    <p class="local-note"><svg class="icon"><use href="#icon-lock"></use></svg>Your imported PDFs stay saved in this browser.</p>
   </main>
-  <section class="reader" id="reader" hidden=""><div class="reader-bar"><strong id="reader-title">PDF</strong><button id="close-reader">Back to library</button></div><iframe id="pdf-frame" title="PDF reader"></iframe></section>
-  <input id="file-input" type="file" accept="application/pdf,.pdf" multiple="" hidden="">
-  <div id="toast" role="status"></div>
+
+  <section class="reader" id="reader" hidden aria-label="PDF reader">
+    <div class="reader-bar"><strong id="reader-title">PDF</strong><button id="close-reader" type="button">Back to library</button></div>
+    <iframe id="pdf-frame" title="PDF reader"></iframe>
+  </section>
+  <input id="file-input" type="file" accept="application/pdf,.pdf" multiple hidden>
+  <div id="toast" role="status" aria-live="polite"></div>
+
   <script>
     const seed = [
-      { title:"Human Anatomy", detail:"248 pages · PDF" }, { title:"Organic Chemistry", detail:"182 pages · PDF" },
-      { title:"Research Notes", detail:"32 pages · notebook" }, { title:"Clinical Cases", detail:"96 pages · PDF" },
-      { title:"Lecture Notes", detail:"74 pages · notebook" }, { title:"Pathology Review", detail:"311 pages · PDF" }
+      { id: 'anatomy', title: 'Human Anatomy', detail: '248 pages · PDF', type: 'PDF', tone: 'mint', date: 'Updated today' },
+      { id: 'chemistry', title: 'Organic Chemistry', detail: '182 pages · PDF', type: 'PDF', tone: 'sky', date: 'Updated yesterday' },
+      { id: 'research', title: 'Research Notes', detail: '32 pages · notebook', type: 'NOTEBOOK', tone: 'lilac', date: 'Edited Mar 18' },
+      { id: 'clinical', title: 'Clinical Cases', detail: '96 pages · PDF', type: 'PDF', tone: 'sun', date: 'Edited Mar 16' },
+      { id: 'lecture', title: 'Lecture Notes', detail: '74 pages · notebook', type: 'NOTEBOOK', tone: 'peach', date: 'Edited Mar 12' },
+      { id: 'pathology', title: 'Pathology Review', detail: '311 pages · PDF', type: 'PDF', tone: 'mint', date: 'Edited Mar 08' }
     ];
-    let notebooks = [...seed], db;
-    const grid = document.querySelector('#grid'), count = document.querySelector('#count'), search = document.querySelector('#search'), toast = document.querySelector('#toast');
-    const escapeHTML = value => value.replace(/[&<>"']/g, char => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[char]));
+    let notebooks = [...seed];
+    let db;
+    const grid = document.querySelector('#grid');
+    const count = document.querySelector('#count');
+    const search = document.querySelector('#search');
+    const toast = document.querySelector('#toast');
+    const icon = name => `<svg class="icon"><use href="#icon-${name}"></use></svg>`;
+    const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
+    const toneClass = tone => ['mint', 'sky', 'lilac', 'sun', 'peach'].includes(tone) ? `tone-${tone}` : 'tone-sky';
+
     function render() {
       const query = search.value.trim().toLowerCase();
       const visible = notebooks.filter(item => item.title.toLowerCase().includes(query));
       count.textContent = `${visible.length} item${visible.length === 1 ? '' : 's'}`;
-      grid.innerHTML = visible.length ? visible.map(item => `<article class="card" data-id="${item.id || ''}"><div class="cover"><span>${item.file ? '▤' : '✎'}</span></div><div class="meta"><strong>${escapeHTML(item.title)}</strong><small>${escapeHTML(item.detail)}</small></div></article>`).join('') : '<div class="empty">No notebooks match your search.</div>';
+      grid.innerHTML = visible.length ? visible.map(item => `
+        <article class="card" data-id="${escapeHTML(item.id || '')}" tabindex="0" role="button" aria-label="Open ${escapeHTML(item.title)}">
+          <div class="cover ${toneClass(item.tone)}">
+            <span class="cover-badge">${icon(item.file ? 'file-text' : item.type === 'PDF' ? 'file-text' : 'notebook')}${escapeHTML(item.file ? 'PDF' : item.type || 'NOTEBOOK')}</span>
+            <div class="page-lines"><span></span><span></span><span></span><span></span><span></span></div>
+            <span class="cover-icon">${icon(item.file ? 'file-text' : 'pencil')}</span>
+          </div>
+          <div class="meta">
+            <div class="meta-top"><span>${escapeHTML(item.date || 'Saved locally')}</span><span>${item.file || item.type === 'PDF' ? 'PDF' : 'NOTE'}</span></div>
+            <strong>${escapeHTML(item.title)}</strong>
+            <small>${escapeHTML(item.detail)}</small>
+          </div>
+        </article>`).join('') : `
+        <div class="empty">
+          <span class="empty-icon">${icon('search')}</span>
+          <strong>No pages found</strong>
+          <p>Try a different search, or start a fresh notebook for the next idea.</p>
+          <button class="primary" type="button" data-empty-new><span class="button-content">${icon('plus')}New notebook</span></button>
+        </div>`;
     }
-    function show(message) { toast.textContent = message; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2600); }
-    function openDB() { return new Promise(resolve => { if (!('indexedDB' in window)) return resolve(null); const request = indexedDB.open('paperleaf-web', 1); request.onupgradeneeded = () => request.result.createObjectStore('documents', { keyPath:'id' }); request.onsuccess = () => resolve(request.result); request.onerror = () => resolve(null); }); }
-    function storedDocuments() { return new Promise(resolve => { if (!db) return resolve([]); const request = db.transaction('documents').objectStore('documents').getAll(); request.onsuccess = () => resolve(request.result || []); request.onerror = () => resolve([]); }); }
-    function saveDocument(document) { if (!db) return; db.transaction('documents', 'readwrite').objectStore('documents').put(document); }
-    function addFiles(files) { [...files].forEach(file => { const id = crypto.randomUUID(); const item = { id, title:file.name.replace(/\.pdf$/i, ''), detail:'PDF · imported in this browser', file }; saveDocument(item); item.url = URL.createObjectURL(file); notebooks.unshift(item); }); render(); show(`${files.length} PDF${files.length === 1 ? '' : 's'} added to your library.`); }
+
+    function show(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+
+    function openDB() {
+      return new Promise(resolve => {
+        if (!('indexedDB' in window)) return resolve(null);
+        const request = indexedDB.open('paperleaf-web', 1);
+        request.onupgradeneeded = () => request.result.createObjectStore('documents', { keyPath: 'id' });
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => resolve(null);
+      });
+    }
+
+    function storedDocuments() {
+      return new Promise(resolve => {
+        if (!db) return resolve([]);
+        const request = db.transaction('documents').objectStore('documents').getAll();
+        request.onsuccess = () => resolve(request.result || []);
+        request.onerror = () => resolve([]);
+      });
+    }
+
+    function saveDocument(record) {
+      if (!db) return;
+      db.transaction('documents', 'readwrite').objectStore('documents').put(record);
+    }
+
+    function addFiles(files) {
+      [...files].forEach(file => {
+        const record = { id: crypto.randomUUID(), title: file.name.replace(/\.pdf$/i, ''), detail: 'PDF · imported in this browser', type: 'PDF', tone: 'peach', file };
+        saveDocument(record);
+        record.url = URL.createObjectURL(file);
+        notebooks.unshift(record);
+      });
+      render();
+      show(`${files.length} PDF${files.length === 1 ? '' : 's'} added to your shelf.`);
+    }
+
+    function createNotebook() {
+      notebooks.unshift({ id: crypto.randomUUID(), title: 'Untitled Notebook', detail: '0 pages · notebook', type: 'NOTEBOOK', tone: 'lilac', date: 'Saved just now' });
+      render();
+      show('A fresh page is ready.');
+    }
+
+    function openNotebook(card) {
+      const item = notebooks.find(notebook => notebook.id === card?.dataset.id);
+      if (!item) return;
+      if (!item.file) return show('Handwriting editor is next for the web version.');
+      document.querySelector('#reader-title').textContent = item.title;
+      document.querySelector('#pdf-frame').src = item.url;
+      document.querySelector('#reader').hidden = false;
+    }
+
     document.querySelector('#import').addEventListener('click', () => document.querySelector('#file-input').click());
     document.querySelector('#file-input').addEventListener('change', event => { if (event.target.files.length) addFiles(event.target.files); event.target.value = ''; });
-    document.querySelector('#new').addEventListener('click', () => { notebooks.unshift({ id:crypto.randomUUID(), title:'Untitled Notebook', detail:'0 pages · notebook' }); render(); show('New notebook added.'); });
+    document.querySelector('#new').addEventListener('click', createNotebook);
     search.addEventListener('input', render);
-    grid.addEventListener('click', event => { const card = event.target.closest('.card'); const item = notebooks.find(notebook => notebook.id === card?.dataset.id); if (!item) return; if (!item.file) return show('Handwriting editor is next for the web version.'); document.querySelector('#reader-title').textContent = item.title; document.querySelector('#pdf-frame').src = item.url; document.querySelector('#reader').hidden = false; });
-    document.querySelector('#close-reader').addEventListener('click', () => { document.querySelector('#reader').hidden = true; document.querySelector('#pdf-frame').src = ''; });
-    (async () => { db = await openDB(); const saved = await storedDocuments(); saved.forEach(item => { item.url = URL.createObjectURL(item.file); notebooks.unshift(item); }); render(); })();
+    grid.addEventListener('click', event => {
+      if (event.target.closest('[data-empty-new]')) return createNotebook();
+      openNotebook(event.target.closest('.card'));
+    });
+    grid.addEventListener('keydown', event => {
+      if ((event.key === 'Enter' || event.key === ' ') && event.target.closest('.card')) {
+        event.preventDefault();
+        openNotebook(event.target.closest('.card'));
+      }
+    });
+    document.querySelector('#close-reader').addEventListener('click', () => {
+      document.querySelector('#reader').hidden = true;
+      document.querySelector('#pdf-frame').src = '';
+    });
+    window.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && !document.querySelector('#reader').hidden) document.querySelector('#close-reader').click();
+    });
+    (async () => {
+      db = await openDB();
+      const saved = await storedDocuments();
+      saved.reverse().forEach(item => { item.url = URL.createObjectURL(item.file); notebooks.unshift(item); });
+      render();
+    })();
   </script>
-
-
-</body><div id="codex-browser-sidebar-comments-root" style="position: fixed; inset: 0px; pointer-events: none; z-index: 2147483647;"></div></html>
+</body>
+</html>
