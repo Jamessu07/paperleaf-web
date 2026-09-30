@@ -377,6 +377,7 @@
         <button class="tool-button" type="button" data-draw-tool="oval" aria-label="Draw clean oval" title="Draw a clean oval"><svg class="icon"><use href="#icon-square"></use></svg><span>Oval</span></button>
         <button class="tool-button" type="button" data-draw-tool="select" aria-label="Select and move annotation" title="Select and move annotation"><svg class="icon"><use href="#icon-move"></use></svg><span>Select</span></button>
         <button class="tool-button" type="button" data-action="insert-image" aria-label="Insert image" title="Insert image"><svg class="icon"><use href="#icon-image"></use></svg><span>Image</span></button>
+        <button class="tool-button palm-guard-button" type="button" data-action="toggle-palm-guard" aria-label="Toggle palm rejection" aria-pressed="false" title="Allow finger drawing"><svg class="icon"><use href="#icon-lock"></use></svg><span data-palm-label>Touch draw</span></button>
         <span class="tool-divider" aria-hidden="true"></span>
         <label class="tool-slider" title="Pen, highlight, or eraser size"><span>Size <output id="pdf-size-value">3</output></span><input id="pdf-size" type="range" min="1" max="28" value="3" aria-label="Tool size"></label>
         <div class="color-picker" aria-label="Ink and highlight color"><span>Color</span><button class="color-swatch active" type="button" data-color="#ff6115" style="--swatch:#ff6115" aria-label="Orange"></button><button class="color-swatch" type="button" data-color="#2f6fed" style="--swatch:#2f6fed" aria-label="Blue"></button><button class="color-swatch" type="button" data-color="#2e9b63" style="--swatch:#2e9b63" aria-label="Green"></button><button class="color-swatch" type="button" data-color="#e04f5f" style="--swatch:#e04f5f" aria-label="Red"></button><input id="pdf-color" type="color" value="#ff6115" aria-label="Custom annotation color"></div>
@@ -403,6 +404,7 @@
         <button class="tool-button" type="button" data-draw-tool="oval" aria-label="Draw clean oval" title="Draw a clean oval"><svg class="icon"><use href="#icon-square"></use></svg><span>Oval</span></button>
         <button class="tool-button" type="button" data-draw-tool="select" aria-label="Select and move annotation" title="Select and move annotation"><svg class="icon"><use href="#icon-move"></use></svg><span>Select</span></button>
         <button class="tool-button" type="button" data-action="insert-image" aria-label="Insert image" title="Insert image"><svg class="icon"><use href="#icon-image"></use></svg><span>Image</span></button>
+        <button class="tool-button palm-guard-button" type="button" data-action="toggle-palm-guard" aria-label="Toggle palm rejection" aria-pressed="false" title="Allow finger drawing"><svg class="icon"><use href="#icon-lock"></use></svg><span data-palm-label>Touch draw</span></button>
         <span class="tool-divider" aria-hidden="true"></span>
         <label class="tool-slider" title="Pen, highlight, or eraser size"><span>Size <output id="notebook-size-value">3</output></span><input id="notebook-size" type="range" min="1" max="28" value="3" aria-label="Tool size"></label>
         <div class="color-picker" aria-label="Ink and highlight color"><span>Color</span><button class="color-swatch active" type="button" data-color="#ff6115" style="--swatch:#ff6115" aria-label="Orange"></button><button class="color-swatch" type="button" data-color="#2f6fed" style="--swatch:#2f6fed" aria-label="Blue"></button><button class="color-swatch" type="button" data-color="#2e9b63" style="--swatch:#2e9b63" aria-label="Green"></button><button class="color-swatch" type="button" data-color="#e04f5f" style="--swatch:#e04f5f" aria-label="Red"></button><input id="notebook-color" type="color" value="#ff6115" aria-label="Custom annotation color"></div>
@@ -457,6 +459,7 @@
     let notebookZoom = 1;
     let pdfResizeTimer;
     let clipboardPayload = null;
+    let palmGuard;
     let contextItemId = null;
     let contextSurface = null;
     let contextPage = 1;
@@ -533,6 +536,35 @@
       setTimeout(() => toast.classList.remove('show'), 2600);
     }
     function formatZoom(value) { return `${Math.round(value * 100)}%`; }
+    function detectPalmGuard() {
+      const platform = navigator.platform || '';
+      const userAgent = navigator.userAgent || '';
+      return navigator.maxTouchPoints > 1 && (/MacIntel/.test(platform) || /iPad/.test(userAgent));
+    }
+    function readPalmGuardPreference() {
+      try {
+        const saved = localStorage.getItem('paperleaf-palm-guard');
+        if (saved === 'on') return true;
+        if (saved === 'off') return false;
+      } catch {}
+      return detectPalmGuard();
+    }
+    function setPalmGuard(enabled, announce = false) {
+      palmGuard = Boolean(enabled);
+      try { localStorage.setItem('paperleaf-palm-guard', palmGuard ? 'on' : 'off'); } catch {}
+      document.querySelectorAll('[data-action="toggle-palm-guard"]').forEach(button => {
+        button.classList.toggle('active', palmGuard);
+        button.setAttribute('aria-pressed', String(palmGuard));
+        button.title = palmGuard ? 'Ignore touch while drawing' : 'Allow finger drawing';
+        const label = button.querySelector('[data-palm-label]');
+        if (label) label.textContent = palmGuard ? 'Palm guard' : 'Touch draw';
+      });
+      document.querySelectorAll('.pdf-annotation-layer, #notebook-canvas').forEach(canvas => {
+        canvas.style.touchAction = palmGuard ? 'pan-x pan-y' : 'none';
+      });
+      if (announce) show(palmGuard ? 'Palm guard on — touch is ignored while writing.' : 'Touch drawing on — finger input is enabled.');
+    }
+    function canDrawPointer(event) { return !palmGuard || event.pointerType !== 'touch'; }
     function updateZoomUI() {
       document.querySelector('#pdf-zoom-value').textContent = formatZoom(pdfZoom);
       document.querySelector('#notebook-zoom-value').textContent = formatZoom(notebookZoom);
@@ -866,14 +898,18 @@
     function bindDrawingCanvas(canvas, getState, pageNumber = 1) {
       if (!canvas) return;
       let current;
+      let activePointerId = null;
+      canvas.style.touchAction = palmGuard ? 'pan-x pan-y' : 'none';
       const layer = () => activeSurface === 'notebook' ? document.querySelector('#notebook-annotations') : canvas.closest('.pdf-page')?.querySelector('.annotation-layer');
       canvas.addEventListener('pointerdown', event => {
-        event.preventDefault(); canvas.setPointerCapture(event.pointerId);
+        if (!canDrawPointer(event) || activePointerId !== null) return;
+        activePointerId = event.pointerId;
+        event.preventDefault(); canvas.setPointerCapture?.(event.pointerId);
         if (activeSurface === 'pdf') activePdfPage = pageNumber;
         const point = pointFromEvent(event, canvas);
         const state = getState();
-        if (drawingTool === 'text') return createTextAnnotation(point, pageNumber);
-        if (drawingTool === 'image') { pendingImageTarget = { surface: activeSurface, page: pageNumber, x: point.x, y: point.y }; imageInput.click(); return; }
+        if (drawingTool === 'text') { createTextAnnotation(point, pageNumber); activePointerId = null; return; }
+        if (drawingTool === 'image') { pendingImageTarget = { surface: activeSurface, page: pageNumber, x: point.x, y: point.y }; imageInput.click(); activePointerId = null; return; }
         if (drawingTool === 'box' || drawingTool === 'oval' || drawingTool === 'select') {
           current = { type: drawingTool, start: point, preview: document.createElement('div'), state };
           current.preview.className = `shape-preview ${drawingTool === 'select' ? 'selection-rect' : drawingTool}`;
@@ -885,7 +921,7 @@
         state.strokes.push(current.stroke); drawStrokes(canvas, state.strokes);
       });
       canvas.addEventListener('pointermove', event => {
-        if (!current) return;
+        if (!current || event.pointerId !== activePointerId) return;
         event.preventDefault();
         const point = pointFromEvent(event, canvas);
         if (current.type === 'stroke') {
@@ -894,8 +930,9 @@
         } else updatePreview(current.preview, current.start, point);
       });
       const finish = event => {
-        if (!current) return;
+        if (!current || event.pointerId !== activePointerId) return;
         const finished = current; current = null;
+        activePointerId = null;
         if (finished.type === 'stroke') {
           const recognised = drawingTool === 'pen' ? recogniseStroke(finished.stroke) : null;
           if (recognised?.type === 'line') { finished.stroke.tool = 'line'; finished.stroke.points = recognised.points; }
@@ -916,7 +953,7 @@
         finished.state.items.push(item); selectedAnnotationId = item.id; activeSelection = null;
         renderAnnotationLayer(layer(), finished.state); persistCurrent();
       };
-      canvas.addEventListener('pointerup', finish); canvas.addEventListener('pointercancel', finish);
+      canvas.addEventListener('pointerup', finish); canvas.addEventListener('pointercancel', finish); canvas.addEventListener('lostpointercapture', finish);
     }
     function createTextAnnotation(point, pageNumber = 1) {
       if (activeSurface === 'pdf') activePdfPage = pageNumber;
@@ -1090,6 +1127,7 @@
       if ((event.key === 'Enter' || event.key === ' ') && event.target.closest('.card')) { event.preventDefault(); openNotebook(event.target.closest('.card')); }
     });
     document.querySelectorAll('[data-draw-tool]').forEach(button => button.addEventListener('click', () => setDrawingTool(button.dataset.drawTool)));
+    document.querySelectorAll('[data-action="toggle-palm-guard"]').forEach(button => button.addEventListener('click', () => setPalmGuard(!palmGuard, true)));
     document.querySelectorAll('[data-action="insert-image"]').forEach(button => button.addEventListener('click', requestImageInsert));
     document.querySelectorAll('[data-action="copy"]').forEach(button => button.addEventListener('click', copySelection));
     document.querySelectorAll('[data-action="paste"]').forEach(button => button.addEventListener('click', pasteSelection));
@@ -1116,6 +1154,8 @@
     contextMenu.addEventListener('contextmenu', event => event.preventDefault());
     document.addEventListener('click', event => { if (!event.target.closest('#context-menu')) hideContextMenu(); });
     bindDrawingCanvas(notebookCanvas, () => activeNotebookState, 1);
+    palmGuard = readPalmGuardPreference();
+    setPalmGuard(palmGuard);
     window.addEventListener('resize', () => {
       if (!document.querySelector('#notebook-editor').hidden) resizeNotebookCanvas();
       if (!document.querySelector('#reader').hidden && activePdfItem) { clearTimeout(pdfResizeTimer); pdfResizeTimer = setTimeout(() => renderPdfDocument(activePdfItem), 140); }
