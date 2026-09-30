@@ -45,6 +45,7 @@
 
     button, input { font: inherit; }
     button { cursor: pointer; }
+    button[hidden] { display: none !important; }
     button, input { -webkit-tap-highlight-color: transparent; }
     ::selection { color: var(--cream); background: var(--orange); }
     :focus-visible { outline: 3px solid var(--orange); outline-offset: 4px; }
@@ -121,11 +122,18 @@
     .page-lines span:nth-child(4) { width: 68%; }
     .cover-badge { position: absolute; top: 14px; left: 14px; display: inline-flex; align-items: center; gap: 5px; padding: 6px 9px; border: 1px solid rgba(51, 35, 30, .12); border-radius: 999px; color: #5d4031; background: rgba(255, 255, 255, .63); font-size: 10px; font-weight: 900; letter-spacing: .08em; }
     .cover-badge .icon { width: 13px; height: 13px; stroke-width: 2; }
+    .cover-remove { position: absolute; top: 12px; right: 12px; z-index: 3; display: grid; place-items: center; width: 38px; min-width: 38px; height: 38px; min-height: 38px; padding: 0; border: 1px solid rgba(51, 35, 30, .14); border-radius: 12px; color: var(--orange-deep); background: rgba(255, 255, 255, .86); box-shadow: 0 6px 14px rgba(91, 52, 30, .12); opacity: 0; transform: translateY(-4px); transition: opacity .18s ease, transform .18s ease, background-color .18s ease; }
+    .cover-remove .icon { width: 17px; height: 17px; }
+    .card:hover .cover-remove, .card:focus-within .cover-remove, .cover-remove:focus-visible { opacity: 1; transform: none; }
+    .cover-remove:hover { color: #fff; background: var(--orange-deep); }
     .cover-icon { position: relative; z-index: 1; display: grid; place-items: center; width: 70px; height: 70px; border: 1px solid rgba(51, 35, 30, .1); border-radius: 22px; color: var(--orange-deep); background: rgba(255, 255, 255, .76); box-shadow: 0 10px 20px rgba(91, 52, 30, .1); transform: rotate(-5deg); }
     .cover-icon .icon { width: 34px; height: 34px; stroke-width: 1.7; }
     .meta { padding: 14px 4px 3px; }
     .meta-top { display: flex; justify-content: space-between; gap: 10px; color: var(--muted); font-size: 12px; font-weight: 800; }
     .meta strong { display: block; margin-top: 7px; overflow: hidden; font: 600 21px/1.1 "Fredoka", ui-rounded, sans-serif; white-space: nowrap; text-overflow: ellipsis; }
+    .notebook-title-editor { display: block; width: 100%; margin-top: 7px; padding: 2px 0; overflow: hidden; border: 1px solid transparent; border-radius: 7px; outline: 0; color: var(--ink); background: transparent; font: 600 21px/1.1 "Fredoka", ui-rounded, sans-serif; white-space: nowrap; text-overflow: ellipsis; }
+    .notebook-title-editor:hover { border-color: var(--line); background: #fffaf4; }
+    .notebook-title-editor:focus { border-color: var(--orange); background: #fffaf4; box-shadow: 0 0 0 3px rgba(255, 97, 21, .12); }
     .meta small { display: block; margin-top: 8px; color: var(--muted); font-size: 12px; }
     .empty { grid-column: 1 / -1; display: grid; justify-items: center; gap: 12px; padding: 62px 20px; border: 1px dashed #d9c7b8; border-radius: 22px; color: var(--muted); background: rgba(255, 255, 255, .55); text-align: center; }
     .empty-icon { display: grid; place-items: center; width: 58px; height: 58px; border-radius: 20px; color: var(--orange-deep); background: var(--sun); }
@@ -140,6 +148,8 @@
     .reader[hidden] { display: none; }
     .reader-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; color: #fff; background: #3b2922; flex-wrap: wrap; }
     .reader-bar strong { font: 500 20px "Fredoka", ui-rounded, sans-serif; }
+    .reader-title-input { width: min(36vw, 360px); min-width: 170px; padding: 0; border: 1px solid transparent; border-radius: 7px; outline: 0; color: #fff; background: transparent; font: 500 20px/1.15 "Fredoka", ui-rounded, sans-serif; }
+    .reader-title-input:hover, .reader-title-input:focus { padding: 4px 7px; border-color: rgba(255, 255, 255, .3); background: rgba(255, 255, 255, .08); }
     .reader-heading { display: grid; gap: 2px; }
     .reader-heading span { color: rgba(255, 255, 255, .65); font-size: 12px; font-weight: 800; }
     .reader-toolbar { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
@@ -148,6 +158,7 @@
     .reader-bar .tool-button, .reader-bar .save-button, .reader-bar .close-button { min-width: 42px; min-height: 40px; padding: 0 11px; border-radius: 11px; }
     .reader-bar .tool-button { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border-color: rgba(255, 255, 255, .12); }
     .reader-bar .tool-button.active { color: var(--ink); background: #fff7ea; }
+    .reader-bar .color-swatch { background: var(--swatch); }
     .reader-bar .tool-button span { font-size: 12px; font-weight: 800; }
     .reader-bar .tool-button .icon, .reader-bar .save-button .icon { width: 17px; height: 17px; }
     .reader-bar .save-button { color: var(--ink); background: var(--sun); }
@@ -163,6 +174,47 @@
     .notebook-page::after { position: absolute; top: 0; bottom: 0; left: 72px; width: 1px; content: ""; background: rgba(255, 97, 21, .18); pointer-events: none; }
     .notebook-page canvas { position: absolute; inset: 0; width: 100%; height: 100%; cursor: crosshair; touch-action: none; }
     .notebook-page .paper-label { position: absolute; top: 22px; left: 44px; color: #c06a45; font: 600 17px "Fredoka", ui-rounded, sans-serif; pointer-events: none; }
+    .reader-bar { align-items: flex-start; }
+    .reader-toolbar { justify-content: flex-end; max-width: min(100%, 980px); }
+    .tool-divider { width: 1px; height: 32px; margin: 0 2px; background: rgba(255, 255, 255, .18); }
+    .tool-slider { display: grid; gap: 2px; align-content: center; min-width: 104px; color: rgba(255, 255, 255, .72); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+    .tool-slider span { display: flex; justify-content: space-between; gap: 8px; }
+    .tool-slider output { color: #fff; font-variant-numeric: tabular-nums; }
+    .tool-slider input { width: 104px; accent-color: #ffd36d; }
+    .color-picker { display: flex; align-items: center; gap: 5px; min-height: 40px; padding: 8px 10px; border: 1px solid rgba(255, 255, 255, .12); border-radius: 11px; color: rgba(255, 255, 255, .72); font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; }
+    .color-swatch { width: 18px; min-width: 18px; height: 18px; min-height: 18px; padding: 0; border: 2px solid rgba(255, 255, 255, .55); border-radius: 50%; background: var(--swatch); box-shadow: none; }
+    .color-swatch:hover { transform: none; box-shadow: 0 0 0 3px rgba(255, 255, 255, .16); }
+    .color-swatch.active { border-color: #fff; box-shadow: 0 0 0 2px #ffd36d; }
+    .color-picker input[type="color"] { width: 22px; height: 22px; padding: 0; border: 0; border-radius: 50%; background: transparent; cursor: pointer; }
+    .color-picker input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+    .color-picker input[type="color"]::-webkit-color-swatch { border: 2px solid rgba(255, 255, 255, .7); border-radius: 50%; }
+    .annotation-layer { position: absolute; inset: 0; z-index: 3; pointer-events: none; overflow: hidden; }
+    .annotation-item { position: absolute; min-width: 12px; min-height: 12px; pointer-events: auto; touch-action: none; }
+    .annotation-item.selected { z-index: 5; }
+    .annotation-item.selected::before { position: absolute; inset: -5px; content: ""; border: 1px dashed #ff6115; border-radius: 3px; pointer-events: none; }
+    .annotation-item.annotation-text.selected::before { display: none; }
+    .annotation-drag-handle { position: absolute; top: -3px; left: 50%; width: 46px; height: 7px; border-radius: 999px; background: #ff6115; opacity: 0; transform: translateX(-50%); cursor: move; transition: opacity .15s ease; }
+    .annotation-item.selected .annotation-drag-handle { opacity: .78; }
+    .annotation-text-body { width: 100%; height: 100%; min-height: 24px; padding: 5px 7px; border: var(--annotation-border, 1px solid rgba(51, 35, 30, .14)); border-radius: 7px; outline: none; color: var(--annotation-color, #33231e); background: var(--annotation-background, #fffdf8); font-size: var(--annotation-size, 18px); line-height: 1.25; box-shadow: 0 4px 12px rgba(91, 52, 30, .08); box-sizing: border-box; }
+    .annotation-text-body:focus { outline: 2px solid rgba(255, 97, 21, .35); outline-offset: 2px; }
+    .annotation-image-frame { width: 100%; height: 100%; overflow: hidden; border: 1px solid rgba(51, 35, 30, .3); border-radius: 6px; background: #fff; box-shadow: 0 8px 18px rgba(91, 52, 30, .16); }
+    .annotation-image-frame img { display: block; width: 100%; height: 100%; object-fit: cover; transform: scale(var(--crop-scale, 1)); transform-origin: 50% 50%; user-select: none; pointer-events: none; }
+    .annotation-item.is-cropping .annotation-image-frame { outline: 2px solid #ffd36d; outline-offset: -2px; cursor: move; }
+    .annotation-item.is-cropping .annotation-image-frame::after { position: absolute; inset: 0; content: "Crop mode · drag image"; display: grid; place-items: center; color: #fff; background: rgba(51, 35, 30, .28); font-size: 12px; font-weight: 900; letter-spacing: .02em; pointer-events: none; }
+    .annotation-box { width: 100%; height: 100%; border: var(--box-width, 3px) solid var(--annotation-color, #ff6115); border-radius: 0; background: transparent; }
+    .resize-handle { position: absolute; right: -8px; bottom: -8px; width: 16px; height: 16px; border: 2px solid #fff; border-radius: 4px; background: #ff6115; box-shadow: 0 2px 6px rgba(51, 35, 30, .25); cursor: nwse-resize; opacity: 0; }
+    .annotation-item.selected .resize-handle { opacity: 1; }
+    .shape-preview { position: absolute; z-index: 8; border: 3px solid var(--shape-color, #ff6115); pointer-events: none; }
+    .shape-preview.oval { border-radius: 50%; }
+    .shape-preview.box { border-radius: 0; }
+    .selection-rect { position: absolute; z-index: 7; border: 1px dashed #ff6115; background: rgba(255, 97, 21, .08); pointer-events: none; }
+    .notebook-stage { overflow: auto; }
+    .notebook-page { width: min(1100px, calc(100% - 32px)); height: 980px; min-height: 980px; overflow: visible; }
+    .notebook-page.is-expanded { width: min(1500px, calc(100% - 32px)); height: 1600px; min-height: 1600px; }
+    .notebook-page.is-expanded::before { inset: 58px 58px 44px; }
+    .notebook-page.is-expanded::after { left: 86px; }
+    .notebook-page.is-expanded .paper-label { left: 58px; }
+    .image-input-note { max-width: 240px; color: var(--muted); font-size: 12px; line-height: 1.4; }
     @media (max-width: 680px) {
       .reader-bar { align-items: flex-start; padding: 12px; }
       .reader-toolbar { width: 100%; }
@@ -170,12 +222,30 @@
       .reader-bar .tool-button span { display: none; }
       .reader-bar .save-button, .reader-bar .close-button { flex: 1.4; }
       .notebook-page { width: calc(100% - 20px); height: calc(100% - 24px); min-height: 480px; margin: 12px auto; }
+      .notebook-page { height: 820px; min-height: 820px; }
       .notebook-page::before { left: 26px; right: 18px; }
       .notebook-page::after { left: 46px; }
       .notebook-page .paper-label { left: 26px; }
+      .reader-toolbar { justify-content: flex-start; max-width: none; }
+      .tool-divider { display: none; }
+      .tool-slider { min-width: 88px; }
+      .tool-slider input { width: 88px; }
+      .color-picker { order: 20; }
     }
     #toast { position: fixed; left: 50%; bottom: 24px; z-index: 10; display: flex; align-items: center; gap: 8px; max-width: min(90vw, 420px); padding: 13px 17px; border-radius: 14px; color: #fff; background: #3b2922; box-shadow: var(--shadow); font-size: 13px; font-weight: 800; opacity: 0; pointer-events: none; transform: translate(-50%, 20px); transition: opacity .2s ease, transform .2s ease; }
     #toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .context-menu { position: fixed; z-index: 20; display: grid; gap: 8px; width: 220px; padding: 12px; border: 1px solid rgba(234, 223, 213, .96); border-radius: 14px; color: var(--ink); background: #fffdf8; box-shadow: 0 18px 40px rgba(51, 35, 30, .2); }
+    .context-menu[hidden] { display: none; }
+    .context-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 0 2px 4px; font-size: 12px; font-weight: 900; }
+    .context-menu button { min-height: 34px; padding: 0 10px; border-radius: 9px; font-size: 12px; font-weight: 800; }
+    .context-row { display: flex; gap: 6px; }
+    .context-row button { flex: 1; }
+    .context-toggle { width: 100%; color: var(--ink); background: #f4ece4; text-align: left; }
+    .context-label { color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; }
+    .context-colors { display: flex; align-items: center; gap: 7px; }
+    .context-colors button { width: 24px; min-width: 24px; height: 24px; min-height: 24px; padding: 0; border: 2px solid rgba(51, 35, 30, .18); border-radius: 50%; background: var(--context-color); }
+    .context-colors input[type="color"] { width: 28px; height: 28px; padding: 0; border: 0; background: transparent; cursor: pointer; }
+    .context-delete { color: #fff; background: var(--orange-deep); }
 
     .tone-mint { --cover: var(--mint); }
     .tone-sky { --cover: var(--sky); }
@@ -230,6 +300,15 @@
     <symbol id="icon-eraser" viewBox="0 0 24 24"><path d="m8.5 18.5-3-3a2.1 2.1 0 0 1 0-3L14.7 3.3a2.1 2.1 0 0 1 3 0l3 3a2.1 2.1 0 0 1 0 3l-9.2 9.2Z"/><path d="m13 5 6 6M4 20h8"/></symbol>
     <symbol id="icon-undo" viewBox="0 0 24 24"><path d="M9 7 4 12l5 5"/><path d="M4 12h10a6 6 0 0 1 6 6v1"/></symbol>
     <symbol id="icon-save" viewBox="0 0 24 24"><path d="M5 4h12l2 2v14H5Z"/><path d="M8 4v6h8V4M8 20v-6h8v6"/></symbol>
+    <symbol id="icon-square" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="1"/></symbol>
+    <symbol id="icon-type" viewBox="0 0 24 24"><path d="M5 5h14M12 5v14M8 19h8"/></symbol>
+    <symbol id="icon-image" viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="14" rx="2"/><circle cx="9" cy="10" r="1.5"/><path d="m5 17 4.5-4 3 2.5 2-2 4.5 4"/></symbol>
+    <symbol id="icon-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="11" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h2"/></symbol>
+    <symbol id="icon-clipboard" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 5V3h6v2M8 11h8M8 15h6"/></symbol>
+    <symbol id="icon-move" viewBox="0 0 24 24"><path d="M12 3v18M3 12h18M12 3l-3 3M12 3l3 3M12 21l-3-3M12 21l3-3M3 12l3-3M3 12l3 3M21 12l-3-3M21 12l-3 3"/></symbol>
+    <symbol id="icon-scissors" viewBox="0 0 24 24"><circle cx="6" cy="7" r="2.5"/><circle cx="6" cy="17" r="2.5"/><path d="m8 8.5 11 8M8 15.5l11-8"/></symbol>
+    <symbol id="icon-expand" viewBox="0 0 24 24"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M21 16v5h-5"/><path d="m3 3 6 6M21 3l-6 6M3 21l6-6M21 21l-6-6"/></symbol>
+    <symbol id="icon-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M7 7l1 13h8l1-13M10 11v5M14 11v5"/></symbol>
   </svg>
 
   <main class="shell" id="library">
@@ -278,12 +357,23 @@
 
   <section class="reader" id="reader" hidden aria-label="PDF reader">
     <div class="reader-bar">
-      <div class="reader-heading"><strong id="reader-title">PDF</strong><span id="reader-meta">Draw directly on your pages</span></div>
+      <div class="reader-heading"><input class="reader-title-input" id="reader-title" type="text" value="PDF" aria-label="Rename document"><span id="reader-meta">Draw directly on your pages</span></div>
       <div class="reader-toolbar" id="pdf-toolbar">
         <button class="tool-button active" type="button" data-draw-tool="pen" aria-label="Pen" title="Pen"><svg class="icon"><use href="#icon-pencil"></use></svg><span>Pen</span></button>
         <button class="tool-button" type="button" data-draw-tool="highlighter" aria-label="Highlighter" title="Highlighter"><svg class="icon"><use href="#icon-sparkle"></use></svg><span>Highlight</span></button>
         <button class="tool-button" type="button" data-draw-tool="eraser" aria-label="Eraser" title="Eraser"><svg class="icon"><use href="#icon-eraser"></use></svg><span>Erase</span></button>
+        <button class="tool-button" type="button" data-draw-tool="text" aria-label="Insert text" title="Insert text"><svg class="icon"><use href="#icon-type"></use></svg><span>Text</span></button>
+        <button class="tool-button" type="button" data-draw-tool="box" aria-label="Draw solid box" title="Draw a solid box"><svg class="icon"><use href="#icon-square"></use></svg><span>Box</span></button>
+        <button class="tool-button" type="button" data-draw-tool="oval" aria-label="Draw clean oval" title="Draw a clean oval"><svg class="icon"><use href="#icon-square"></use></svg><span>Oval</span></button>
+        <button class="tool-button" type="button" data-draw-tool="select" aria-label="Select and move annotation" title="Select and move annotation"><svg class="icon"><use href="#icon-move"></use></svg><span>Select</span></button>
+        <button class="tool-button" type="button" data-action="insert-image" aria-label="Insert image" title="Insert image"><svg class="icon"><use href="#icon-image"></use></svg><span>Image</span></button>
+        <span class="tool-divider" aria-hidden="true"></span>
+        <label class="tool-slider" title="Pen, highlight, or eraser size"><span>Size <output id="pdf-size-value">3</output></span><input id="pdf-size" type="range" min="1" max="28" value="3" aria-label="Tool size"></label>
+        <div class="color-picker" aria-label="Ink and highlight color"><span>Color</span><button class="color-swatch active" type="button" data-color="#ff6115" style="--swatch:#ff6115" aria-label="Orange"></button><button class="color-swatch" type="button" data-color="#2f6fed" style="--swatch:#2f6fed" aria-label="Blue"></button><button class="color-swatch" type="button" data-color="#2e9b63" style="--swatch:#2e9b63" aria-label="Green"></button><button class="color-swatch" type="button" data-color="#e04f5f" style="--swatch:#e04f5f" aria-label="Red"></button><input id="pdf-color" type="color" value="#ff6115" aria-label="Custom annotation color"></div>
         <button class="tool-button" id="pdf-undo" type="button" aria-label="Undo last mark" title="Undo last mark"><svg class="icon"><use href="#icon-undo"></use></svg><span>Undo</span></button>
+        <button class="tool-button" type="button" data-action="copy" aria-label="Copy annotation" title="Copy annotation"><svg class="icon"><use href="#icon-copy"></use></svg><span>Copy</span></button>
+        <button class="tool-button" type="button" data-action="paste" aria-label="Paste annotation" title="Paste annotation"><svg class="icon"><use href="#icon-clipboard"></use></svg><span>Paste</span></button>
+        <button class="tool-button crop-action" type="button" data-action="crop" aria-label="Crop selected image" title="Crop selected image" hidden><svg class="icon"><use href="#icon-scissors"></use></svg><span>Crop</span></button>
         <button class="save-button" id="pdf-save" type="button"><span class="button-content"><svg class="icon"><use href="#icon-save"></use></svg>Save marks</span></button>
         <button class="close-button" id="close-reader" type="button">Back to library</button>
       </div>
@@ -292,52 +382,180 @@
   </section>
   <section class="reader notebook-editor" id="notebook-editor" hidden aria-label="Handwritten notebook editor">
     <div class="reader-bar">
-      <div class="reader-heading"><strong id="notebook-title">Untitled Notebook</strong><span>Write with your mouse, trackpad, or finger</span></div>
+      <div class="reader-heading"><input class="reader-title-input" id="notebook-title" type="text" value="Untitled Notebook" aria-label="Rename notebook"><span>Write with your mouse, trackpad, or finger</span></div>
       <div class="reader-toolbar">
         <button class="tool-button active" type="button" data-draw-tool="pen" aria-label="Pen" title="Pen"><svg class="icon"><use href="#icon-pencil"></use></svg><span>Pen</span></button>
         <button class="tool-button" type="button" data-draw-tool="highlighter" aria-label="Highlighter" title="Highlighter"><svg class="icon"><use href="#icon-sparkle"></use></svg><span>Highlight</span></button>
         <button class="tool-button" type="button" data-draw-tool="eraser" aria-label="Eraser" title="Eraser"><svg class="icon"><use href="#icon-eraser"></use></svg><span>Erase</span></button>
+        <button class="tool-button" type="button" data-draw-tool="text" aria-label="Insert text" title="Insert text"><svg class="icon"><use href="#icon-type"></use></svg><span>Text</span></button>
+        <button class="tool-button" type="button" data-draw-tool="box" aria-label="Draw solid box" title="Draw a solid box"><svg class="icon"><use href="#icon-square"></use></svg><span>Box</span></button>
+        <button class="tool-button" type="button" data-draw-tool="oval" aria-label="Draw clean oval" title="Draw a clean oval"><svg class="icon"><use href="#icon-square"></use></svg><span>Oval</span></button>
+        <button class="tool-button" type="button" data-draw-tool="select" aria-label="Select and move annotation" title="Select and move annotation"><svg class="icon"><use href="#icon-move"></use></svg><span>Select</span></button>
+        <button class="tool-button" type="button" data-action="insert-image" aria-label="Insert image" title="Insert image"><svg class="icon"><use href="#icon-image"></use></svg><span>Image</span></button>
+        <span class="tool-divider" aria-hidden="true"></span>
+        <label class="tool-slider" title="Pen, highlight, or eraser size"><span>Size <output id="notebook-size-value">3</output></span><input id="notebook-size" type="range" min="1" max="28" value="3" aria-label="Tool size"></label>
+        <div class="color-picker" aria-label="Ink and highlight color"><span>Color</span><button class="color-swatch active" type="button" data-color="#ff6115" style="--swatch:#ff6115" aria-label="Orange"></button><button class="color-swatch" type="button" data-color="#2f6fed" style="--swatch:#2f6fed" aria-label="Blue"></button><button class="color-swatch" type="button" data-color="#2e9b63" style="--swatch:#2e9b63" aria-label="Green"></button><button class="color-swatch" type="button" data-color="#e04f5f" style="--swatch:#e04f5f" aria-label="Red"></button><input id="notebook-color" type="color" value="#ff6115" aria-label="Custom annotation color"></div>
         <button class="tool-button" id="notebook-undo" type="button" aria-label="Undo last mark" title="Undo last mark"><svg class="icon"><use href="#icon-undo"></use></svg><span>Undo</span></button>
+        <button class="tool-button" type="button" data-action="copy" aria-label="Copy annotation" title="Copy annotation"><svg class="icon"><use href="#icon-copy"></use></svg><span>Copy</span></button>
+        <button class="tool-button" type="button" data-action="paste" aria-label="Paste annotation" title="Paste annotation"><svg class="icon"><use href="#icon-clipboard"></use></svg><span>Paste</span></button>
+        <button class="tool-button crop-action" type="button" data-action="crop" aria-label="Crop selected image" title="Crop selected image" hidden><svg class="icon"><use href="#icon-scissors"></use></svg><span>Crop</span></button>
+        <button class="tool-button" type="button" data-action="expand-notebook" aria-label="Expand notebook canvas" title="Expand notebook canvas"><svg class="icon"><use href="#icon-expand"></use></svg><span>Expand</span></button>
         <button class="save-button" id="notebook-save" type="button"><span class="button-content"><svg class="icon"><use href="#icon-save"></use></svg>Save page</span></button>
         <button class="close-button" id="close-notebook" type="button">Back to library</button>
       </div>
     </div>
-    <div class="reader-stage"><div class="notebook-page"><span class="paper-label">PaperLeaf notes</span><canvas id="notebook-canvas" aria-label="Handwritten notebook page"></canvas></div></div>
+    <div class="reader-stage notebook-stage"><div class="notebook-page"><span class="paper-label">PaperLeaf notes</span><canvas id="notebook-canvas" aria-label="Handwritten notebook page"></canvas><div class="annotation-layer" id="notebook-annotations" aria-label="Notebook annotations"></div></div></div>
   </section>
   <input id="file-input" type="file" accept="application/pdf,.pdf" multiple hidden>
+  <input id="image-input" type="file" accept="image/*" hidden>
   <div id="toast" role="status" aria-live="polite"></div>
+  <div class="context-menu" id="context-menu" role="menu" aria-label="Annotation options" hidden>
+  <div class="context-heading"><span id="context-title">Annotation options</span><span aria-hidden="true">More</span></div>
+    <span class="context-label">Text size</span>
+    <div class="context-row"><button type="button" data-context-action="smaller" aria-label="Make text smaller">A −</button><button type="button" data-context-action="larger" aria-label="Make text larger">A +</button></div>
+    <span class="context-label">Color</span>
+    <div class="context-colors"><button type="button" data-context-color="#33231e" style="--context-color:#33231e" aria-label="Dark ink"></button><button type="button" data-context-color="#2f6fed" style="--context-color:#2f6fed" aria-label="Blue ink"></button><button type="button" data-context-color="#2e9b63" style="--context-color:#2e9b63" aria-label="Green ink"></button><button type="button" data-context-color="#e04f5f" style="--context-color:#e04f5f" aria-label="Red ink"></button><input id="context-color" type="color" value="#33231e" aria-label="Custom annotation color"></div>
+    <button class="context-toggle" type="button" data-context-action="toggle-background">Remove background</button>
+    <button class="context-toggle" type="button" data-context-action="toggle-border">Remove border</button>
+    <button class="context-delete" type="button" data-context-action="delete">Delete annotation</button>
+  </div>
 
   <script>
     const seed = [
-      { id: 'anatomy', title: 'Human Anatomy', detail: '248 pages · PDF', type: 'PDF', tone: 'mint', date: 'Updated today' },
-      { id: 'chemistry', title: 'Organic Chemistry', detail: '182 pages · PDF', type: 'PDF', tone: 'sky', date: 'Updated yesterday' },
       { id: 'research', title: 'Research Notes', detail: '32 pages · notebook', type: 'NOTEBOOK', tone: 'lilac', date: 'Edited Mar 18' },
-      { id: 'clinical', title: 'Clinical Cases', detail: '96 pages · PDF', type: 'PDF', tone: 'sun', date: 'Edited Mar 16' },
-      { id: 'lecture', title: 'Lecture Notes', detail: '74 pages · notebook', type: 'NOTEBOOK', tone: 'peach', date: 'Edited Mar 12' },
-      { id: 'pathology', title: 'Pathology Review', detail: '311 pages · PDF', type: 'PDF', tone: 'mint', date: 'Edited Mar 08' }
+      { id: 'lecture', title: 'Lecture Notes', detail: '74 pages · notebook', type: 'NOTEBOOK', tone: 'peach', date: 'Edited Mar 12' }
     ];
-    let notebooks = [...seed];
+    let notebooks = seed.map(item => ({ ...item, title: storedTitle(item.id) || item.title }));
     let db;
     let activePdfItem;
     let activeNotebookItem;
     let activeSurface = 'pdf';
     let activePdfPage = 1;
     let activePdfAnnotations = {};
-    let activeNotebookAnnotations = [];
+    let activeNotebookState = emptyState();
     let drawingTool = 'pen';
+    let inkColor = '#ff6115';
+    let strokeSize = 3;
+    let selectedAnnotationId = null;
+    let activeSelection = null;
+    let cropMode = false;
+    let pendingImageTarget = null;
+    let notebookExpanded = false;
+    let clipboardPayload = null;
+    let contextItemId = null;
+    let contextSurface = null;
+    let contextPage = 1;
     const grid = document.querySelector('#grid');
     const count = document.querySelector('#count');
     const search = document.querySelector('#search');
     const toast = document.querySelector('#toast');
+    const pdfViewer = document.querySelector('#pdf-viewer');
+    const notebookCanvas = document.querySelector('#notebook-canvas');
+    const imageInput = document.querySelector('#image-input');
+    const contextMenu = document.querySelector('#context-menu');
+    const contextTitle = document.querySelector('#context-title');
+    const contextColor = document.querySelector('#context-color');
     const icon = name => `<svg class="icon"><use href="#icon-${name}"></use></svg>`;
     const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]));
     const toneClass = tone => ['mint', 'sky', 'lilac', 'sun', 'peach'].includes(tone) ? `tone-${tone}` : 'tone-sky';
-    const pdfViewer = document.querySelector('#pdf-viewer');
-    const notebookCanvas = document.querySelector('#notebook-canvas');
 
     function annotationKey(id) { return `annotations:${id}`; }
-
+    function titleKey(id) { return `title:${id}`; }
+    function storedTitle(id) {
+      try { return localStorage.getItem(titleKey(id)) || ''; }
+      catch { return ''; }
+    }
+    function saveTitle(item, value) {
+      const title = value.trim() || 'Untitled Notebook';
+      item.title = title;
+      try { localStorage.setItem(titleKey(item.id), title); }
+      catch { show('This browser could not save the name.'); }
+      if (item.file) saveDocument(item);
+      const openTitle = [...document.querySelectorAll('[data-open-title-id]')].find(input => input.dataset.openTitleId === item.id);
+      if (openTitle && openTitle.value !== title) openTitle.value = title;
+      const card = [...document.querySelectorAll('.card')].find(entry => entry.dataset.id === item.id);
+      if (card) { card.setAttribute('aria-label', `Open ${title}`); card.querySelector('.notebook-title-editor')?.setAttribute('aria-label', `Rename ${title}`); }
+      return title;
+    }
+    function wireTitleEditor(input) {
+      input.addEventListener('input', () => {
+        const item = notebooks.find(entry => entry.id === input.dataset.titleId);
+        if (item) saveTitle(item, input.value);
+      });
+      input.addEventListener('blur', () => {
+        const item = notebooks.find(entry => entry.id === input.dataset.titleId);
+        if (item) input.value = saveTitle(item, input.value);
+      });
+      input.addEventListener('keydown', event => {
+        if (event.key === 'Enter') { event.preventDefault(); input.blur(); }
+        if (event.key === 'Escape') { const item = notebooks.find(entry => entry.id === input.dataset.titleId); input.value = item?.title || input.value; input.blur(); }
+      });
+    }
+    function newId() { return crypto.randomUUID ? crypto.randomUUID() : `annotation-${Date.now()}-${Math.random().toString(16).slice(2)}`; }
+    function clone(value) { return JSON.parse(JSON.stringify(value)); }
     function clamp(value, min = 0, max = 1) { return Math.min(max, Math.max(min, value)); }
+    function emptyState() { return { strokes: [], items: [] }; }
+    function normaliseState(value) {
+      if (Array.isArray(value)) return { strokes: value, items: [] };
+      return { strokes: Array.isArray(value?.strokes) ? value.strokes : [], items: Array.isArray(value?.items) ? value.items : [] };
+    }
+    function currentState() {
+      if (activeSurface === 'notebook') return activeNotebookState;
+      return activePdfAnnotations[activePdfPage] || (activePdfAnnotations[activePdfPage] = emptyState());
+    }
+    function stateForTarget(target) {
+      if (target.surface === 'notebook') return activeNotebookState;
+      return activePdfAnnotations[target.page] || (activePdfAnnotations[target.page] = emptyState());
+    }
+    function activeLayer() {
+      return activeSurface === 'notebook'
+        ? document.querySelector('#notebook-annotations')
+        : document.querySelector(`.pdf-page[data-page="${activePdfPage}"] .annotation-layer`);
+    }
+    function show(message) {
+      toast.textContent = message;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+    function render() {
+      const query = search.value.trim().toLowerCase();
+      const visible = notebooks.filter(item => item.title.toLowerCase().includes(query));
+      count.textContent = `${visible.length} item${visible.length === 1 ? '' : 's'}`;
+      grid.innerHTML = visible.length ? visible.map(item => `
+        <article class="card" data-id="${escapeHTML(item.id || '')}" tabindex="0" role="button" aria-label="Open ${escapeHTML(item.title)}">
+          <div class="cover ${toneClass(item.tone)}">
+            <span class="cover-badge">${icon(item.file ? 'file-text' : item.type === 'PDF' ? 'file-text' : 'notebook')}${escapeHTML(item.file ? 'PDF' : item.type || 'NOTEBOOK')}</span>
+            ${item.file ? `<button class="cover-remove" type="button" data-remove-id="${escapeHTML(item.id)}" aria-label="Remove ${escapeHTML(item.title)}" title="Remove PDF">${icon('trash')}</button>` : ''}
+            <div class="page-lines"><span></span><span></span><span></span><span></span><span></span></div>
+            <span class="cover-icon">${icon(item.file ? 'file-text' : 'pencil')}</span>
+          </div>
+          <div class="meta">
+            <div class="meta-top"><span>${escapeHTML(item.date || 'Saved locally')}</span><span>${item.file || item.type === 'PDF' ? 'PDF' : 'NOTE'}</span></div>
+            <input class="notebook-title-editor" type="text" value="${escapeHTML(item.title)}" data-title-id="${escapeHTML(item.id)}" aria-label="Rename ${escapeHTML(item.title)}" title="Click to rename">
+            <small>${escapeHTML(item.detail)}</small>
+          </div>
+        </article>`).join('') : `
+        <div class="empty">
+          <span class="empty-icon">${icon('search')}</span>
+          <strong>No pages found</strong>
+          <p>Try a different search, or start a fresh notebook for the next idea.</p>
+          <button class="primary" type="button" data-empty-new><span class="button-content">${icon('plus')}New notebook</span></button>
+        </div>`;
+      grid.querySelectorAll('.notebook-title-editor').forEach(wireTitleEditor);
+    }
+
+    function loadAnnotations(id) {
+      try { return Promise.resolve(JSON.parse(localStorage.getItem(annotationKey(id)) || 'null')); }
+      catch { return Promise.resolve(null); }
+    }
+    function saveAnnotations(id, pages) {
+      try { localStorage.setItem(annotationKey(id), JSON.stringify(pages)); }
+      catch { show('This browser could not save the marks.'); }
+    }
+    function persistCurrent() {
+      if (activeSurface === 'pdf' && activePdfItem) saveAnnotations(activePdfItem.id, activePdfAnnotations);
+      if (activeSurface === 'notebook' && activeNotebookItem) saveAnnotations(`notebook:${activeNotebookItem.id}`, activeNotebookState);
+    }
 
     function drawStrokes(canvas, strokes = []) {
       if (!canvas || !canvas.clientWidth || !canvas.clientHeight) return;
@@ -347,12 +565,13 @@
       strokes.forEach(stroke => {
         if (!stroke.points?.length) return;
         context.save();
+        const highlighter = stroke.tool === 'highlighter';
         context.globalCompositeOperation = stroke.tool === 'eraser' ? 'destination-out' : 'source-over';
-        context.globalAlpha = stroke.tool === 'highlighter' ? .28 : 1;
-        context.strokeStyle = stroke.tool === 'highlighter' ? '#ffb52b' : (stroke.color || '#ff6115');
-        context.lineWidth = (stroke.size || 3) * scale * (stroke.tool === 'highlighter' ? 4 : stroke.tool === 'eraser' ? 6 : 1);
-        context.lineCap = 'round';
-        context.lineJoin = 'round';
+        context.globalAlpha = highlighter ? .34 : 1;
+        context.strokeStyle = stroke.color || (highlighter ? '#ffd052' : '#ff6115');
+        context.lineWidth = (stroke.size || 3) * scale * (highlighter ? 2.6 : stroke.tool === 'eraser' ? 6 : 1);
+        context.lineCap = highlighter || stroke.tool === 'line' ? 'butt' : 'round';
+        context.lineJoin = highlighter || stroke.tool === 'line' ? 'miter' : 'round';
         context.beginPath();
         stroke.points.forEach((point, index) => {
           const x = point.x * canvas.width;
@@ -364,267 +583,492 @@
       });
     }
 
-    function bindDrawingCanvas(canvas, getStrokes, onChange, pageNumber = 1) {
-      let currentStroke;
-      const pointFromEvent = event => {
-        const rect = canvas.getBoundingClientRect();
-        return { x: clamp((event.clientX - rect.left) / rect.width), y: clamp((event.clientY - rect.top) / rect.height) };
-      };
+    function shapeBounds(points) {
+      const xs = points.map(point => point.x);
+      const ys = points.map(point => point.y);
+      const minX = Math.min(...xs); const maxX = Math.max(...xs);
+      const minY = Math.min(...ys); const maxY = Math.max(...ys);
+      return { x: minX, y: minY, w: Math.max(.02, maxX - minX), h: Math.max(.02, maxY - minY) };
+    }
+    function recogniseStroke(stroke) {
+      const points = stroke.points || [];
+      if (points.length < 3) return null;
+      const first = points[0];
+      const last = points[points.length - 1];
+      const direct = Math.hypot(last.x - first.x, last.y - first.y);
+      let length = 0;
+      for (let index = 1; index < points.length; index += 1) length += Math.hypot(points[index].x - points[index - 1].x, points[index].y - points[index - 1].y);
+      if (direct < .075 && length > .22) {
+        const bounds = shapeBounds(points);
+        const perimeterRatio = length / Math.max(.001, 2 * (bounds.w + bounds.h));
+        return { type: perimeterRatio > .86 ? 'box' : 'oval', bounds };
+      }
+      if (direct > .08 && length / direct < 1.35) return { type: 'line', points: [first, last] };
+      return null;
+    }
+    function pointFromEvent(event, element) {
+      const rect = element.getBoundingClientRect();
+      return { x: clamp((event.clientX - rect.left) / rect.width), y: clamp((event.clientY - rect.top) / rect.height) };
+    }
+    function updatePreview(element, start, end) {
+      const x = Math.min(start.x, end.x); const y = Math.min(start.y, end.y);
+      element.style.left = `${x * 100}%`; element.style.top = `${y * 100}%`;
+      element.style.width = `${Math.max(.02, Math.abs(end.x - start.x)) * 100}%`;
+      element.style.height = `${Math.max(.02, Math.abs(end.y - start.y)) * 100}%`;
+    }
+    function renderSelectionRect() {
+      document.querySelectorAll('.selection-rect').forEach(element => element.remove());
+      if (!activeSelection) return;
+      const layer = activeLayer();
+      if (!layer) return;
+      const rect = document.createElement('div');
+      rect.className = 'selection-rect';
+      rect.style.left = `${activeSelection.x * 100}%`; rect.style.top = `${activeSelection.y * 100}%`;
+      rect.style.width = `${activeSelection.w * 100}%`; rect.style.height = `${activeSelection.h * 100}%`;
+      layer.append(rect);
+    }
+
+    function setImageTransform(element, item) {
+      const image = element.querySelector('img');
+      if (!image) return;
+      const crop = item.crop || { scale: 1, x: 0, y: 0 };
+      image.style.transform = `translate(${crop.x || 0}px, ${crop.y || 0}px) scale(${crop.scale || 1})`;
+    }
+    function updateItemLayout(element, item) {
+      element.style.left = `${item.x * 100}%`; element.style.top = `${item.y * 100}%`;
+      element.style.width = `${item.w * 100}%`; element.style.height = `${item.h * 100}%`;
+      element.style.setProperty('--annotation-color', item.color || '#ff6115');
+      element.style.setProperty('--annotation-size', `${item.fontSize || 18}px`);
+      element.style.setProperty('--box-width', `${item.size || 3}px`);
+      element.style.setProperty('--annotation-background', item.type === 'text' && item.background !== false ? (item.background || '#fffdf8') : 'transparent');
+      element.style.setProperty('--annotation-border', item.type === 'text' && item.border !== false ? '1px solid rgba(51, 35, 30, .14)' : '0 solid transparent');
+      if (item.type === 'image') setImageTransform(element, item);
+    }
+    function selectedItem() { return currentState().items.find(item => item.id === selectedAnnotationId); }
+    function contextItem() {
+      if (contextSurface !== activeSurface || (contextSurface === 'pdf' && contextPage !== activePdfPage)) return null;
+      return currentState().items.find(item => item.id === contextItemId);
+    }
+    function hideContextMenu() {
+      contextMenu.hidden = true;
+      contextItemId = null;
+      contextSurface = null;
+    }
+    function showContextMenu(event, item) {
+      contextItemId = item.id; contextSurface = activeSurface; contextPage = activePdfPage;
+      contextTitle.textContent = item.type === 'text' ? 'Text box' : `${item.type[0].toUpperCase()}${item.type.slice(1)} annotation`;
+      contextColor.value = item.color || '#33231e';
+      const backgroundToggle = contextMenu.querySelector('[data-context-action="toggle-background"]');
+      const borderToggle = contextMenu.querySelector('[data-context-action="toggle-border"]');
+      backgroundToggle.hidden = item.type !== 'text';
+      borderToggle.hidden = item.type !== 'text';
+      backgroundToggle.textContent = item.background !== false ? 'Remove background' : 'Add background';
+      borderToggle.textContent = item.border !== false ? 'Remove border' : 'Add border';
+      contextMenu.hidden = false;
+      contextMenu.style.left = `${Math.min(event.clientX, window.innerWidth - 232)}px`;
+      contextMenu.style.top = `${Math.min(event.clientY, window.innerHeight - 250)}px`;
+    }
+    function deleteAnnotation(item = contextItem() || selectedItem()) {
+      if (!item) return show('Select an annotation first.');
+      const state = currentState();
+      state.items = state.items.filter(entry => entry.id !== item.id);
+      selectedAnnotationId = null; activeSelection = null; hideContextMenu(); renderActivePage(); persistCurrent(); show('Annotation deleted.');
+    }
+    function changeContextFont(delta) {
+      const item = contextItem() || selectedItem();
+      if (!item || item.type !== 'text') return show('Font size is available for text boxes.');
+      item.fontSize = clamp((item.fontSize || 18) + delta, 10, 72); hideContextMenu(); renderActivePage(); persistCurrent();
+    }
+    function changeContextColor(color) {
+      const item = contextItem() || selectedItem();
+      if (!item || item.type === 'image') return show('Select text, a box, or an oval to change its color.');
+      item.color = color; contextColor.value = color; hideContextMenu(); renderActivePage(); persistCurrent();
+    }
+    function toggleContextOption(option) {
+      const item = contextItem() || selectedItem();
+      if (!item || item.type !== 'text') return show('Background and border options are available for text boxes.');
+      item[option] = option === 'background'
+        ? (item.background === false ? '#fffdf8' : false)
+        : item.border === false;
+      hideContextMenu(); renderActivePage(); persistCurrent();
+    }
+    function updateSelectionUI() {
+      document.querySelectorAll('.annotation-item').forEach(element => {
+        const selected = element.dataset.id === selectedAnnotationId;
+        element.classList.toggle('selected', selected);
+        element.classList.toggle('is-cropping', selected && cropMode);
+      });
+      const showCrop = selectedItem()?.type === 'image';
+      document.querySelectorAll('.crop-action').forEach(button => { button.hidden = !showCrop; button.classList.toggle('active', cropMode); });
+      renderSelectionRect();
+    }
+    function selectAnnotation(id, rerender = true) {
+      selectedAnnotationId = id;
+      activeSelection = null;
+      cropMode = false;
+      if (rerender) renderActivePage(); else updateSelectionUI();
+    }
+    function renderAnnotationLayer(layer, state) {
+      if (!layer) return;
+      layer.innerHTML = '';
+      state.items.forEach(item => {
+        const element = document.createElement('div');
+        element.className = `annotation-item annotation-${item.type}`;
+        element.dataset.id = item.id;
+        updateItemLayout(element, item);
+        if (item.type === 'text') {
+          const body = document.createElement('div');
+          body.className = 'annotation-text-body';
+          body.contentEditable = 'true';
+          body.spellcheck = false;
+          body.textContent = item.content || '';
+          body.addEventListener('input', () => { item.content = body.textContent; persistCurrent(); });
+          body.addEventListener('pointerdown', event => { event.stopPropagation(); selectAnnotation(item.id, false); if (drawingTool === 'select') { event.preventDefault(); body.blur(); } });
+          body.addEventListener('keydown', event => { if (drawingTool === 'select' && (event.key === 'Backspace' || event.key === 'Delete')) { event.preventDefault(); deleteAnnotation(item); } });
+          body.addEventListener('contextmenu', event => { event.preventDefault(); event.stopPropagation(); selectAnnotation(item.id, false); showContextMenu(event, item); });
+          element.append(body);
+          const handle = document.createElement('div');
+          handle.className = 'annotation-drag-handle';
+          handle.title = 'Drag to move text';
+          handle.addEventListener('pointerdown', event => beginItemDrag(item, element, event));
+          element.append(handle);
+        } else if (item.type === 'image') {
+          const frame = document.createElement('div'); frame.className = 'annotation-image-frame';
+          const image = document.createElement('img'); image.src = item.src; image.alt = item.alt || 'Inserted image'; image.draggable = false;
+          frame.append(image); element.append(frame);
+          element.addEventListener('pointerdown', event => {
+            event.stopPropagation();
+            const cropping = cropMode && selectedAnnotationId === item.id;
+            if (!cropping) selectAnnotation(item.id, false);
+            if (cropping) beginCropDrag(item, element, event); else beginItemDrag(item, element, event);
+          });
+        } else {
+          const shape = document.createElement('div'); shape.className = 'annotation-box';
+          if (item.type === 'oval') shape.style.borderRadius = '50%';
+          element.append(shape);
+          element.addEventListener('pointerdown', event => { event.stopPropagation(); selectAnnotation(item.id, false); beginItemDrag(item, element, event); });
+        }
+        element.addEventListener('contextmenu', event => { event.preventDefault(); event.stopPropagation(); selectAnnotation(item.id, false); showContextMenu(event, item); });
+        const resize = document.createElement('span');
+        resize.className = 'resize-handle'; resize.title = 'Resize annotation';
+        resize.addEventListener('pointerdown', event => beginItemResize(item, element, event));
+        element.append(resize);
+        layer.append(element);
+      });
+      updateSelectionUI();
+    }
+    function renderActivePage() {
+      const state = currentState();
+      if (activeSurface === 'notebook') {
+        drawStrokes(notebookCanvas, state.strokes);
+        renderAnnotationLayer(document.querySelector('#notebook-annotations'), state);
+      } else {
+        const canvas = document.querySelector(`.pdf-page[data-page="${activePdfPage}"] .pdf-annotation-layer`);
+        const layer = document.querySelector(`.pdf-page[data-page="${activePdfPage}"] .annotation-layer`);
+        drawStrokes(canvas, state.strokes); renderAnnotationLayer(layer, state);
+      }
+    }
+
+    function beginItemDrag(item, element, event) {
+      if (event.button !== undefined && event.button !== 0) return;
+      event.preventDefault();
+      const layer = element.closest('.annotation-layer');
+      const rect = layer.getBoundingClientRect();
+      const start = { x: event.clientX, y: event.clientY, itemX: item.x, itemY: item.y };
+      function move(moveEvent) {
+        item.x = clamp(start.itemX + (moveEvent.clientX - start.x) / rect.width, 0, 1 - item.w);
+        item.y = clamp(start.itemY + (moveEvent.clientY - start.y) / rect.height, 0, 1 - item.h);
+        updateItemLayout(element, item); updateSelectionUI();
+      }
+      function end() { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', end); persistCurrent(); }
+      window.addEventListener('pointermove', move); window.addEventListener('pointerup', end, { once: true });
+    }
+    function beginItemResize(item, element, event) {
+      event.preventDefault(); event.stopPropagation();
+      selectAnnotation(item.id, false);
+      const layer = element.closest('.annotation-layer'); const rect = layer.getBoundingClientRect();
+      const start = { x: event.clientX, y: event.clientY, w: item.w, h: item.h };
+      function move(moveEvent) {
+        const minWidth = item.type === 'text' ? .06 : .02;
+        const minHeight = item.type === 'text' ? .04 : .02;
+        item.w = clamp(start.w + (moveEvent.clientX - start.x) / rect.width, minWidth, 1 - item.x);
+        item.h = clamp(start.h + (moveEvent.clientY - start.y) / rect.height, minHeight, 1 - item.y);
+        updateItemLayout(element, item);
+      }
+      function end() { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', end); persistCurrent(); }
+      window.addEventListener('pointermove', move); window.addEventListener('pointerup', end, { once: true });
+    }
+    function beginCropDrag(item, element, event) {
+      event.preventDefault();
+      item.crop = item.crop || { scale: 1.2, x: 0, y: 0 };
+      const start = { x: event.clientX, y: event.clientY, cropX: item.crop.x || 0, cropY: item.crop.y || 0 };
+      function move(moveEvent) {
+        item.crop.x = start.cropX + moveEvent.clientX - start.x;
+        item.crop.y = start.cropY + moveEvent.clientY - start.y;
+        setImageTransform(element, item);
+      }
+      function end() { window.removeEventListener('pointermove', move); window.removeEventListener('pointerup', end); persistCurrent(); }
+      window.addEventListener('pointermove', move); window.addEventListener('pointerup', end, { once: true });
+    }
+    function bindDrawingCanvas(canvas, getState, pageNumber = 1) {
+      if (!canvas) return;
+      let current;
+      const layer = () => activeSurface === 'notebook' ? document.querySelector('#notebook-annotations') : canvas.closest('.pdf-page')?.querySelector('.annotation-layer');
       canvas.addEventListener('pointerdown', event => {
-        event.preventDefault();
-        canvas.setPointerCapture(event.pointerId);
+        event.preventDefault(); canvas.setPointerCapture(event.pointerId);
         if (activeSurface === 'pdf') activePdfPage = pageNumber;
-        currentStroke = { tool: drawingTool, color: '#ff6115', size: drawingTool === 'highlighter' ? 4 : 3, points: [pointFromEvent(event)] };
-        getStrokes().push(currentStroke);
-        drawStrokes(canvas, getStrokes());
+        const point = pointFromEvent(event, canvas);
+        const state = getState();
+        if (drawingTool === 'text') return createTextAnnotation(point, pageNumber);
+        if (drawingTool === 'image') { pendingImageTarget = { surface: activeSurface, page: pageNumber, x: point.x, y: point.y }; imageInput.click(); return; }
+        if (drawingTool === 'box' || drawingTool === 'oval' || drawingTool === 'select') {
+          current = { type: drawingTool, start: point, preview: document.createElement('div'), state };
+          current.preview.className = `shape-preview ${drawingTool === 'select' ? 'selection-rect' : drawingTool}`;
+          if (drawingTool !== 'select') current.preview.style.setProperty('--shape-color', inkColor);
+          layer()?.append(current.preview);
+          return;
+        }
+        current = { type: 'stroke', stroke: { tool: drawingTool, color: inkColor, size: strokeSize, points: [point] }, state };
+        state.strokes.push(current.stroke); drawStrokes(canvas, state.strokes);
       });
       canvas.addEventListener('pointermove', event => {
-        if (!currentStroke) return;
+        if (!current) return;
         event.preventDefault();
-        currentStroke.points.push(pointFromEvent(event));
-        drawStrokes(canvas, getStrokes());
+        const point = pointFromEvent(event, canvas);
+        if (current.type === 'stroke') {
+          if (drawingTool === 'highlighter') current.stroke.points = [current.stroke.points[0], point]; else current.stroke.points.push(point);
+          drawStrokes(canvas, current.state.strokes);
+        } else updatePreview(current.preview, current.start, point);
       });
-      const finishStroke = () => { if (currentStroke) { currentStroke = null; onChange(); } };
-      canvas.addEventListener('pointerup', finishStroke);
-      canvas.addEventListener('pointercancel', finishStroke);
+      const finish = event => {
+        if (!current) return;
+        const finished = current; current = null;
+        if (finished.type === 'stroke') {
+          const recognised = drawingTool === 'pen' ? recogniseStroke(finished.stroke) : null;
+          if (recognised?.type === 'line') { finished.stroke.tool = 'line'; finished.stroke.points = recognised.points; }
+          if (recognised?.type === 'box' || recognised?.type === 'oval') {
+            finished.state.strokes.pop();
+            finished.state.items.push({ id: newId(), type: recognised.type, ...recognised.bounds, color: finished.stroke.color, size: finished.stroke.size });
+          }
+          drawStrokes(canvas, finished.state.strokes);
+          if (recognised?.type === 'box' || recognised?.type === 'oval') renderAnnotationLayer(layer(), finished.state);
+          persistCurrent();
+          return;
+        }
+        finished.preview.remove();
+        const point = pointFromEvent(event, canvas);
+        const bounds = { x: Math.min(finished.start.x, point.x), y: Math.min(finished.start.y, point.y), w: Math.max(.02, Math.abs(point.x - finished.start.x)), h: Math.max(.02, Math.abs(point.y - finished.start.y)) };
+        if (finished.type === 'select') { activeSelection = bounds; selectedAnnotationId = null; renderSelectionRect(); show('Selection ready. Copy it or draw again.'); return; }
+        const item = { id: newId(), type: finished.type, ...bounds, color: inkColor, size: strokeSize };
+        finished.state.items.push(item); selectedAnnotationId = item.id; activeSelection = null;
+        renderAnnotationLayer(layer(), finished.state); persistCurrent();
+      };
+      canvas.addEventListener('pointerup', finish); canvas.addEventListener('pointercancel', finish);
     }
-
-    function render() {
-      const query = search.value.trim().toLowerCase();
-      const visible = notebooks.filter(item => item.title.toLowerCase().includes(query));
-      count.textContent = `${visible.length} item${visible.length === 1 ? '' : 's'}`;
-      grid.innerHTML = visible.length ? visible.map(item => `
-        <article class="card" data-id="${escapeHTML(item.id || '')}" tabindex="0" role="button" aria-label="Open ${escapeHTML(item.title)}">
-          <div class="cover ${toneClass(item.tone)}">
-            <span class="cover-badge">${icon(item.file ? 'file-text' : item.type === 'PDF' ? 'file-text' : 'notebook')}${escapeHTML(item.file ? 'PDF' : item.type || 'NOTEBOOK')}</span>
-            <div class="page-lines"><span></span><span></span><span></span><span></span><span></span></div>
-            <span class="cover-icon">${icon(item.file ? 'file-text' : 'pencil')}</span>
-          </div>
-          <div class="meta">
-            <div class="meta-top"><span>${escapeHTML(item.date || 'Saved locally')}</span><span>${item.file || item.type === 'PDF' ? 'PDF' : 'NOTE'}</span></div>
-            <strong>${escapeHTML(item.title)}</strong>
-            <small>${escapeHTML(item.detail)}</small>
-          </div>
-        </article>`).join('') : `
-        <div class="empty">
-          <span class="empty-icon">${icon('search')}</span>
-          <strong>No pages found</strong>
-          <p>Try a different search, or start a fresh notebook for the next idea.</p>
-          <button class="primary" type="button" data-empty-new><span class="button-content">${icon('plus')}New notebook</span></button>
-        </div>`;
+    function createTextAnnotation(point, pageNumber = 1) {
+      if (activeSurface === 'pdf') activePdfPage = pageNumber;
+      const state = currentState();
+      const item = { id: newId(), type: 'text', x: clamp(point.x, 0, .72), y: clamp(point.y, 0, .9), w: .28, h: .09, content: 'Type here', color: inkColor, background: '#fffdf8', border: true, fontSize: Math.max(14, strokeSize * 4) };
+      state.items.push(item); selectedAnnotationId = item.id; activeSelection = null; renderActivePage(); persistCurrent();
+      requestAnimationFrame(() => { const body = activeLayer()?.querySelector(`[data-id="${item.id}"] [contenteditable]`); body?.focus(); body?.select?.(); });
     }
-
-    function show(message) {
-      toast.textContent = message;
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2600);
+    function requestImageInsert() {
+      pendingImageTarget = { surface: activeSurface, page: activePdfPage, x: .32, y: .28 };
+      imageInput.click();
+    }
+    function handleImage(file) {
+      if (!file || !pendingImageTarget) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const target = pendingImageTarget; const state = stateForTarget(target);
+        const item = { id: newId(), type: 'image', x: clamp(target.x, 0, .68), y: clamp(target.y, 0, .72), w: .3, h: .23, src: reader.result, alt: file.name, crop: { scale: 1, x: 0, y: 0 } };
+        state.items.push(item);
+        if (target.surface === activeSurface && target.page === activePdfPage) { selectedAnnotationId = item.id; cropMode = false; renderActivePage(); }
+        persistCurrent(); show('Image inserted. Select it to drag, resize, or crop.');
+        pendingImageTarget = null;
+      };
+      reader.readAsDataURL(file);
+    }
+    function copySelection() {
+      const state = currentState();
+      let items = [];
+      let strokes = [];
+      if (selectedAnnotationId) items = state.items.filter(item => item.id === selectedAnnotationId);
+      else if (activeSelection) {
+        const overlaps = item => item.x < activeSelection.x + activeSelection.w && item.x + item.w > activeSelection.x && item.y < activeSelection.y + activeSelection.h && item.y + item.h > activeSelection.y;
+        items = state.items.filter(overlaps);
+        strokes = state.strokes.filter(stroke => { const bounds = shapeBounds(stroke.points || []); return overlaps(bounds); });
+      } else { items = state.items; strokes = state.strokes; }
+      if (!items.length && !strokes.length) return show('Draw or select an annotation before copying.');
+      clipboardPayload = { items: clone(items), strokes: clone(strokes) };
+      show('Annotation copied. Open another notebook and choose Paste.');
+    }
+    function pasteSelection() {
+      if (!clipboardPayload) return show('Nothing copied yet.');
+      const state = currentState(); const offset = .055;
+      const pastedItems = clipboardPayload.items.map(item => ({ ...clone(item), id: newId(), x: clamp(item.x + offset, 0, 1 - item.w), y: clamp(item.y + offset, 0, 1 - item.h) }));
+      const pastedStrokes = clipboardPayload.strokes.map(stroke => ({ ...clone(stroke), points: stroke.points.map(point => ({ x: clamp(point.x + offset), y: clamp(point.y + offset) })) }));
+      state.items.push(...pastedItems); state.strokes.push(...pastedStrokes); selectedAnnotationId = pastedItems[0]?.id || null; activeSelection = null;
+      renderActivePage(); persistCurrent(); show('Annotation pasted here.');
+    }
+    function toggleCrop() {
+      const item = selectedItem();
+      if (!item || item.type !== 'image') return show('Select an image first.');
+      cropMode = !cropMode; item.crop = item.crop || { scale: 1.2, x: 0, y: 0 }; if (cropMode && item.crop.scale === 1) item.crop.scale = 1.2;
+      updateSelectionUI(); persistCurrent(); show(cropMode ? 'Crop mode on — drag the image inside its frame.' : 'Crop saved.');
+    }
+    function setColor(value) {
+      inkColor = value;
+      document.querySelectorAll('input[type="color"]').forEach(input => { input.value = value; });
+      document.querySelectorAll('.color-swatch').forEach(button => button.classList.toggle('active', button.dataset.color.toLowerCase() === value.toLowerCase()));
+      const item = selectedItem();
+      if (item && item.type !== 'image') { item.color = value; renderActivePage(); persistCurrent(); }
+    }
+    function setSize(value) {
+      strokeSize = Number(value);
+      document.querySelectorAll('input[type="range"]').forEach(input => { input.value = value; });
+      document.querySelectorAll('output[id$="size-value"]').forEach(output => { output.textContent = value; });
+      const item = selectedItem();
+      if (item) { item.size = strokeSize; if (item.type === 'text') item.fontSize = Math.max(14, strokeSize * 4); renderActivePage(); persistCurrent(); }
+    }
+    function setDrawingTool(tool) {
+      drawingTool = tool;
+      document.querySelectorAll('[data-draw-tool]').forEach(button => button.classList.toggle('active', button.dataset.drawTool === drawingTool));
+      document.querySelectorAll('.pdf-annotation-layer, #notebook-canvas').forEach(canvas => { canvas.style.cursor = tool === 'select' ? 'default' : tool === 'text' ? 'text' : 'crosshair'; });
     }
 
     function openDB() {
       return new Promise(resolve => {
         if (!('indexedDB' in window)) return resolve(null);
         const request = indexedDB.open('paperleaf-web');
-        request.onupgradeneeded = () => {
-          const database = request.result;
-          if (!database.objectStoreNames.contains('documents')) database.createObjectStore('documents', { keyPath: 'id' });
-        };
-        request.onsuccess = () => resolve(request.result);
-        request.onerror = () => resolve(null);
+        request.onupgradeneeded = () => { const database = request.result; if (!database.objectStoreNames.contains('documents')) database.createObjectStore('documents', { keyPath: 'id' }); };
+        request.onsuccess = () => resolve(request.result); request.onerror = () => resolve(null);
       });
     }
-
     function storedDocuments() {
       return new Promise(resolve => {
         if (!db) return resolve([]);
         const request = db.transaction('documents').objectStore('documents').getAll();
-        request.onsuccess = () => resolve(request.result || []);
-        request.onerror = () => resolve([]);
+        request.onsuccess = () => resolve(request.result || []); request.onerror = () => resolve([]);
       });
     }
-
-    function saveDocument(record) {
-      if (!db) return;
-      db.transaction('documents', 'readwrite').objectStore('documents').put(record);
+    function saveDocument(record) { if (db) db.transaction('documents', 'readwrite').objectStore('documents').put(record); }
+    function removeDocument(item) {
+      if (!item?.file || !window.confirm(`Remove “${item.title}” from this browser?`)) return;
+      notebooks = notebooks.filter(entry => entry.id !== item.id);
+      if (db) db.transaction('documents', 'readwrite').objectStore('documents').delete(item.id);
+      try { localStorage.removeItem(annotationKey(item.id)); localStorage.removeItem(titleKey(item.id)); } catch { /* local storage may be unavailable */ }
+      if (activePdfItem?.id === item.id) closeEditors();
+      render(); show(`${item.title} removed from your shelf.`);
     }
-
-    function loadAnnotations(id) {
-      try { return Promise.resolve(JSON.parse(localStorage.getItem(annotationKey(id)) || 'null')); }
-      catch { return Promise.resolve(null); }
-    }
-
-    function saveAnnotations(id, pages) {
-      try { localStorage.setItem(annotationKey(id), JSON.stringify(pages)); }
-      catch { show('This browser could not save the marks.'); }
-    }
-
     function addFiles(files) {
-      [...files].forEach(file => {
-        const record = { id: crypto.randomUUID(), title: file.name.replace(/\.pdf$/i, ''), detail: 'PDF · imported in this browser', type: 'PDF', tone: 'peach', file };
-        saveDocument(record);
-        record.url = URL.createObjectURL(file);
-        notebooks.unshift(record);
-      });
-      render();
-      show(`${files.length} PDF${files.length === 1 ? '' : 's'} added to your shelf.`);
+      [...files].forEach(file => { const record = { id: newId(), title: file.name.replace(/\.pdf$/i, ''), detail: 'PDF · imported in this browser', type: 'PDF', tone: 'peach', file }; saveDocument(record); record.url = URL.createObjectURL(file); notebooks.unshift(record); });
+      render(); show(`${files.length} PDF${files.length === 1 ? '' : 's'} added to your shelf.`);
     }
-
     function createNotebook() {
-      notebooks.unshift({ id: crypto.randomUUID(), title: 'Untitled Notebook', detail: '0 pages · notebook', type: 'NOTEBOOK', tone: 'lilac', date: 'Saved just now' });
-      render();
-      show('A fresh page is ready.');
+      notebooks.unshift({ id: newId(), title: 'Untitled Notebook', detail: '0 pages · notebook', type: 'NOTEBOOK', tone: 'lilac', date: 'Saved just now' }); render(); show('A fresh, expandable page is ready.');
     }
-
     async function renderPdfDocument(item) {
-      const frame = document.querySelector('#pdf-frame');
-      pdfViewer.hidden = false;
-      frame.hidden = true;
-      pdfViewer.innerHTML = '<div class="pdf-loading">Opening your pages…</div>';
-      activePdfAnnotations = await loadAnnotations(item.id) || {};
-      if (!window.pdfjsLib) {
-        frame.src = item.url;
-        frame.hidden = false;
-        pdfViewer.hidden = true;
-        document.querySelector('#reader-meta').textContent = 'PDF preview loaded. Connect to the internet to draw on pages.';
-        return;
-      }
+      const frame = document.querySelector('#pdf-frame'); pdfViewer.hidden = false; frame.hidden = true; pdfViewer.innerHTML = '<div class="pdf-loading">Opening your pages…</div>';
+      const saved = await loadAnnotations(item.id); activePdfAnnotations = saved && !Array.isArray(saved) ? Object.fromEntries(Object.entries(saved).map(([page, state]) => [page, normaliseState(state)])) : {};
+      if (!window.pdfjsLib) { frame.src = item.url; frame.hidden = false; pdfViewer.hidden = true; document.querySelector('#reader-meta').textContent = 'PDF preview loaded. Connect to the internet to draw on pages.'; return; }
       window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
       try {
-        const source = item.file ? { data: await item.file.arrayBuffer() } : { url: item.url };
-        const pdf = await window.pdfjsLib.getDocument(source).promise;
-        document.querySelector('#reader-meta').textContent = `${pdf.numPages} page${pdf.numPages === 1 ? '' : 's'} · draw directly on the page`;
+        const source = item.file ? { data: await item.file.arrayBuffer() } : { url: item.url }; const pdf = await window.pdfjsLib.getDocument(source).promise;
+        document.querySelector('#reader-meta').textContent = `${pdf.numPages} page${pdf.numPages === 1 ? '' : 's'} · line, oval, box, text, and image tools`;
         pdfViewer.innerHTML = '';
         for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
-          const page = await pdf.getPage(pageNumber);
-          const baseViewport = page.getViewport({ scale: 1 });
-          const maxWidth = Math.min(Math.max(pdfViewer.clientWidth - 32, 280), 900);
-          const scale = Math.min(1.5, Math.max(.65, maxWidth / baseViewport.width));
-          const viewport = page.getViewport({ scale });
-          const wrapper = document.createElement('div');
-          wrapper.className = 'pdf-page';
-          wrapper.dataset.page = pageNumber;
-          wrapper.style.width = `${viewport.width}px`;
-          const canvas = document.createElement('canvas');
-          canvas.width = viewport.width;
-          canvas.height = viewport.height;
-          const annotationCanvas = document.createElement('canvas');
-          annotationCanvas.className = 'pdf-annotation-layer';
-          annotationCanvas.width = viewport.width;
-          annotationCanvas.height = viewport.height;
-          wrapper.append(canvas, annotationCanvas);
-          pdfViewer.append(wrapper);
-          await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
-          const getPageStrokes = () => activePdfAnnotations[pageNumber] || (activePdfAnnotations[pageNumber] = []);
-          drawStrokes(annotationCanvas, getPageStrokes());
-          bindDrawingCanvas(annotationCanvas, getPageStrokes, () => {}, pageNumber);
+          const page = await pdf.getPage(pageNumber); const baseViewport = page.getViewport({ scale: 1 });
+          const maxWidth = Math.min(Math.max(pdfViewer.clientWidth - 32, 280), 900); const scale = Math.min(1.5, Math.max(.65, maxWidth / baseViewport.width)); const viewport = page.getViewport({ scale });
+          const wrapper = document.createElement('div'); wrapper.className = 'pdf-page'; wrapper.dataset.page = pageNumber; wrapper.style.width = `${viewport.width}px`;
+          const canvas = document.createElement('canvas'); canvas.width = viewport.width; canvas.height = viewport.height;
+          const annotationCanvas = document.createElement('canvas'); annotationCanvas.className = 'pdf-annotation-layer'; annotationCanvas.width = viewport.width; annotationCanvas.height = viewport.height;
+          const annotationLayer = document.createElement('div'); annotationLayer.className = 'annotation-layer'; annotationLayer.setAttribute('aria-label', `Annotations on page ${pageNumber}`);
+          wrapper.append(canvas, annotationCanvas, annotationLayer); pdfViewer.append(wrapper); await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+          const state = activePdfAnnotations[pageNumber] || (activePdfAnnotations[pageNumber] = emptyState()); drawStrokes(annotationCanvas, state.strokes); renderAnnotationLayer(annotationLayer, state); bindDrawingCanvas(annotationCanvas, () => state, pageNumber);
         }
-      } catch (error) {
-        pdfViewer.innerHTML = '<div class="pdf-loading">This PDF could not be opened here. Try importing it again.</div>';
-        show('Could not open this PDF.');
-      }
+      } catch (error) { pdfViewer.innerHTML = '<div class="pdf-loading">This PDF could not be opened here. Try importing it again.</div>'; show('Could not open this PDF.'); }
     }
-
     async function openPdfEditor(item) {
-      activePdfItem = item;
-      activeSurface = 'pdf';
-      document.querySelector('#reader-title').textContent = item.title;
-      document.querySelector('#reader').hidden = false;
-      document.querySelector('#notebook-editor').hidden = true;
-      await renderPdfDocument(item);
+      activePdfItem = item; activeSurface = 'pdf'; activePdfPage = 1; selectedAnnotationId = null; activeSelection = null; cropMode = false; setDrawingTool('pen');
+      const titleInput = document.querySelector('#reader-title'); titleInput.value = item.title; titleInput.dataset.titleId = item.id; titleInput.dataset.openTitleId = item.id; document.querySelector('#reader').hidden = false; document.querySelector('#notebook-editor').hidden = true; await renderPdfDocument(item);
     }
-
     function resizeNotebookCanvas() {
-      if (!notebookCanvas) return;
-      const rect = notebookCanvas.getBoundingClientRect();
-      const ratio = Math.min(window.devicePixelRatio || 1, 2);
-      notebookCanvas.width = Math.max(1, Math.round(rect.width * ratio));
-      notebookCanvas.height = Math.max(1, Math.round(rect.height * ratio));
-      drawStrokes(notebookCanvas, activeNotebookAnnotations);
+      if (!notebookCanvas) return; const rect = notebookCanvas.getBoundingClientRect(); const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      notebookCanvas.width = Math.max(1, Math.round(rect.width * ratio)); notebookCanvas.height = Math.max(1, Math.round(rect.height * ratio)); drawStrokes(notebookCanvas, activeNotebookState.strokes); renderAnnotationLayer(document.querySelector('#notebook-annotations'), activeNotebookState);
     }
-
     async function openNotebookEditor(item) {
-      activeNotebookItem = item;
-      activeSurface = 'notebook';
-      activeNotebookAnnotations = await loadAnnotations(`notebook:${item.id}`) || [];
-      document.querySelector('#notebook-title').textContent = item.title;
-      document.querySelector('#notebook-editor').hidden = false;
-      document.querySelector('#reader').hidden = true;
+      activeNotebookItem = item; activeSurface = 'notebook'; selectedAnnotationId = null; activeSelection = null; cropMode = false; setDrawingTool('pen');
+      activeNotebookState = normaliseState(await loadAnnotations(`notebook:${item.id}`)); const titleInput = document.querySelector('#notebook-title'); titleInput.value = item.title; titleInput.dataset.titleId = item.id; titleInput.dataset.openTitleId = item.id; document.querySelector('#notebook-editor').hidden = false; document.querySelector('#reader').hidden = true;
       requestAnimationFrame(resizeNotebookCanvas);
     }
-
     function openNotebook(card) {
-      const item = notebooks.find(notebook => notebook.id === card?.dataset.id);
-      if (!item) return;
-      if (item.type === 'NOTEBOOK') return openNotebookEditor(item);
-      if (!item.file) return show('This sample PDF is a preview. Import the PDF to annotate it.');
-      openPdfEditor(item);
+      const item = notebooks.find(notebook => notebook.id === card?.dataset.id); if (!item) return;
+      if (item.type === 'NOTEBOOK') return openNotebookEditor(item); if (!item.file) return show('This sample PDF is a preview. Import the PDF to annotate it.'); openPdfEditor(item);
     }
-
     function undoActiveStroke() {
-      if (activeSurface === 'pdf') {
-        const strokes = activePdfAnnotations[activePdfPage] || [];
-        if (!strokes.length) return show('Nothing to undo on this page yet.');
-        strokes.pop();
-        const canvas = document.querySelector(`.pdf-page[data-page="${activePdfPage}"] .pdf-annotation-layer`);
-        drawStrokes(canvas, strokes);
-      } else {
-        if (!activeNotebookAnnotations.length) return show('Nothing to undo on this page yet.');
-        activeNotebookAnnotations.pop();
-        drawStrokes(notebookCanvas, activeNotebookAnnotations);
-      }
+      const state = currentState();
+      if (state.items.length) state.items.pop(); else if (state.strokes.length) state.strokes.pop(); else return show('Nothing to undo on this page yet.');
+      selectedAnnotationId = null; activeSelection = null; renderActivePage(); persistCurrent();
     }
-
     function saveActiveMarks() {
-      if (activeSurface === 'pdf' && activePdfItem) {
-        saveAnnotations(activePdfItem.id, activePdfAnnotations);
-        show('PDF marks saved in this browser.');
-      } else if (activeNotebookItem) {
-        saveAnnotations(`notebook:${activeNotebookItem.id}`, activeNotebookAnnotations);
-        show('Handwritten page saved in this browser.');
-      }
+      persistCurrent(); show(activeSurface === 'pdf' ? 'PDF annotations saved in this browser.' : 'Notebook annotations saved in this browser.');
     }
-
     function closeEditors() {
-      document.querySelector('#reader').hidden = true;
-      document.querySelector('#notebook-editor').hidden = true;
-      document.querySelector('#pdf-frame').src = '';
-      pdfViewer.innerHTML = '';
+      persistCurrent(); document.querySelector('#reader').hidden = true; document.querySelector('#notebook-editor').hidden = true; document.querySelector('#pdf-frame').src = ''; pdfViewer.innerHTML = ''; selectedAnnotationId = null; activeSelection = null;
     }
 
     document.querySelector('#import').addEventListener('click', () => document.querySelector('#file-input').click());
     document.querySelector('#file-input').addEventListener('change', event => { if (event.target.files.length) addFiles(event.target.files); event.target.value = ''; });
-    document.querySelector('#new').addEventListener('click', createNotebook);
-    search.addEventListener('input', render);
+    imageInput.addEventListener('change', event => { handleImage(event.target.files[0]); event.target.value = ''; });
+    document.querySelector('#new').addEventListener('click', createNotebook); search.addEventListener('input', render);
+    wireTitleEditor(document.querySelector('#reader-title')); wireTitleEditor(document.querySelector('#notebook-title'));
     grid.addEventListener('click', event => {
+      const removeButton = event.target.closest('[data-remove-id]');
+      if (removeButton) { event.preventDefault(); event.stopPropagation(); removeDocument(notebooks.find(item => item.id === removeButton.dataset.removeId)); return; }
+      if (event.target.closest('.notebook-title-editor')) return;
       if (event.target.closest('[data-empty-new]')) return createNotebook();
       openNotebook(event.target.closest('.card'));
     });
     grid.addEventListener('keydown', event => {
-      if ((event.key === 'Enter' || event.key === ' ') && event.target.closest('.card')) {
-        event.preventDefault();
-        openNotebook(event.target.closest('.card'));
-      }
+      if (event.target.closest('.notebook-title-editor')) return;
+      if ((event.key === 'Enter' || event.key === ' ') && event.target.closest('.card')) { event.preventDefault(); openNotebook(event.target.closest('.card')); }
     });
-    document.querySelectorAll('[data-draw-tool]').forEach(button => button.addEventListener('click', () => {
-      drawingTool = button.dataset.drawTool;
-      document.querySelectorAll('[data-draw-tool]').forEach(toolButton => toolButton.classList.toggle('active', toolButton.dataset.drawTool === drawingTool));
-    }));
-    bindDrawingCanvas(notebookCanvas, () => activeNotebookAnnotations, () => {}, 1);
-    document.querySelector('#pdf-undo').addEventListener('click', () => { activeSurface = 'pdf'; undoActiveStroke(); });
-    document.querySelector('#notebook-undo').addEventListener('click', () => { activeSurface = 'notebook'; undoActiveStroke(); });
-    document.querySelector('#pdf-save').addEventListener('click', saveActiveMarks);
-    document.querySelector('#notebook-save').addEventListener('click', saveActiveMarks);
-    document.querySelector('#close-reader').addEventListener('click', closeEditors);
-    document.querySelector('#close-notebook').addEventListener('click', closeEditors);
+    document.querySelectorAll('[data-draw-tool]').forEach(button => button.addEventListener('click', () => setDrawingTool(button.dataset.drawTool)));
+    document.querySelectorAll('[data-action="insert-image"]').forEach(button => button.addEventListener('click', requestImageInsert));
+    document.querySelectorAll('[data-action="copy"]').forEach(button => button.addEventListener('click', copySelection));
+    document.querySelectorAll('[data-action="paste"]').forEach(button => button.addEventListener('click', pasteSelection));
+    document.querySelectorAll('[data-action="crop"]').forEach(button => button.addEventListener('click', toggleCrop));
+    document.querySelector('[data-action="expand-notebook"]').addEventListener('click', () => { notebookExpanded = !notebookExpanded; document.querySelector('.notebook-page').classList.toggle('is-expanded', notebookExpanded); requestAnimationFrame(resizeNotebookCanvas); show(notebookExpanded ? 'Expanded canvas ready — keep writing below the fold.' : 'Compact page restored.'); });
+    document.querySelectorAll('#pdf-undo, #notebook-undo').forEach(button => button.addEventListener('click', undoActiveStroke));
+    document.querySelectorAll('#pdf-save, #notebook-save').forEach(button => button.addEventListener('click', saveActiveMarks));
+    document.querySelector('#close-reader').addEventListener('click', closeEditors); document.querySelector('#close-notebook').addEventListener('click', closeEditors);
+    document.querySelectorAll('input[type="range"]').forEach(input => input.addEventListener('input', event => setSize(event.target.value)));
+    document.querySelectorAll('.color-swatch').forEach(button => button.addEventListener('click', () => setColor(button.dataset.color)));
+    document.querySelectorAll('input[type="color"]').forEach(input => input.addEventListener('input', event => setColor(event.target.value)));
+    contextMenu.addEventListener('click', event => {
+      const action = event.target.closest('[data-context-action]')?.dataset.contextAction;
+      const color = event.target.closest('[data-context-color]')?.dataset.contextColor;
+      if (action === 'delete') deleteAnnotation();
+      if (action === 'smaller') changeContextFont(-2);
+      if (action === 'larger') changeContextFont(2);
+      if (action === 'toggle-background') toggleContextOption('background');
+      if (action === 'toggle-border') toggleContextOption('border');
+      if (color) changeContextColor(color);
+    });
+    contextColor.addEventListener('input', event => changeContextColor(event.target.value));
+    contextMenu.addEventListener('contextmenu', event => event.preventDefault());
+    document.addEventListener('click', event => { if (!event.target.closest('#context-menu')) hideContextMenu(); });
+    bindDrawingCanvas(notebookCanvas, () => activeNotebookState, 1);
     window.addEventListener('resize', () => { if (!document.querySelector('#notebook-editor').hidden) resizeNotebookCanvas(); });
     window.addEventListener('keydown', event => {
-      if (event.key === 'Escape' && (!document.querySelector('#reader').hidden || !document.querySelector('#notebook-editor').hidden)) closeEditors();
+      const editorOpen = !document.querySelector('#reader').hidden || !document.querySelector('#notebook-editor').hidden;
+      if (editorOpen && selectedAnnotationId && (event.key === 'Backspace' || event.key === 'Delete') && !event.target.closest('input, textarea, [contenteditable]')) { event.preventDefault(); deleteAnnotation(selectedItem()); return; }
+      if (editorOpen && (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'c' && !event.target.closest('[contenteditable]')) { event.preventDefault(); copySelection(); }
+      if (editorOpen && (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'v' && !event.target.closest('[contenteditable]')) { event.preventDefault(); pasteSelection(); }
+      if (event.key === 'Escape' && editorOpen) closeEditors();
     });
-    (async () => {
-      db = await openDB();
-      const saved = await storedDocuments();
-      saved.reverse().forEach(item => { if (item.file) item.url = URL.createObjectURL(item.file); notebooks.unshift(item); });
-      render();
-    })();
+    (async () => { db = await openDB(); const saved = await storedDocuments(); saved.reverse().forEach(item => { if (item.file) item.url = URL.createObjectURL(item.file); notebooks.unshift(item); }); render(); })();
   </script>
 </body>
 </html>
