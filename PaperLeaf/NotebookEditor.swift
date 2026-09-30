@@ -10,6 +10,7 @@ struct NotebookEditor: View {
     @State private var drawing = PKDrawing()
     @State private var inkColor: InkColor = .black
     @State private var selectedTool: WritingTool = .pen
+    @State private var fingerDrawingEnabled = false
     @State private var currentCanvasSize = CGSize(width: 900, height: 1273)
     @State private var saveTask: Task<Void, Never>?
     @State private var shareItem: ShareItem?
@@ -44,7 +45,7 @@ struct NotebookEditor: View {
 
                         ZStack {
                             PaperBackground(page: page, store: store)
-                            PencilCanvas(drawing: $drawing, tool: activeTool)
+                            PencilCanvas(drawing: $drawing, tool: activeTool, drawingPolicy: fingerDrawingEnabled ? .anyInput : .pencilOnly)
                         }
                         .frame(width: paperWidth, height: paperHeight)
                         .background(.white)
@@ -88,6 +89,14 @@ struct NotebookEditor: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItemGroup(placement: .topBarTrailing) {
+                        Button {
+                            fingerDrawingEnabled.toggle()
+                        } label: {
+                            Image(systemName: fingerDrawingEnabled ? "hand.draw.fill" : "hand.draw")
+                                .foregroundStyle(fingerDrawingEnabled ? Color.accentColor : Color.primary)
+                        }
+                        .accessibilityLabel(fingerDrawingEnabled ? "Finger drawing on" : "Finger drawing off")
+
                         Menu {
                             ForEach(WritingTool.allCases) { tool in
                                 Button {

@@ -4,12 +4,13 @@ import SwiftUI
 struct PencilCanvas: UIViewRepresentable {
     @Binding var drawing: PKDrawing
     let tool: PKTool
+    let drawingPolicy: PKCanvasViewDrawingPolicy
 
     func makeUIView(context: Context) -> PKCanvasView {
         let canvas = PKCanvasView()
         canvas.backgroundColor = .clear
         canvas.isOpaque = false
-        canvas.drawingPolicy = .anyInput
+        canvas.drawingPolicy = drawingPolicy
         canvas.delegate = context.coordinator
         canvas.drawing = drawing
         canvas.tool = tool
@@ -21,6 +22,7 @@ struct PencilCanvas: UIViewRepresentable {
         let bindingData = drawing.dataRepresentation()
         if currentData != bindingData { canvas.drawing = drawing }
         canvas.tool = tool
+        canvas.drawingPolicy = drawingPolicy
     }
 
     func makeCoordinator() -> Coordinator { Coordinator(self) }
