@@ -148,9 +148,9 @@
     .reader[hidden] { display: none; }
     .reader-bar { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 18px; color: #fff; background: #3b2922; flex-wrap: wrap; }
     .reader-bar strong { font: 500 20px "Fredoka", ui-rounded, sans-serif; }
-    .reader-title-input { width: min(36vw, 360px); min-width: 170px; padding: 0; border: 1px solid transparent; border-radius: 7px; outline: 0; color: #fff; background: transparent; font: 500 20px/1.15 "Fredoka", ui-rounded, sans-serif; }
+    .reader-title-input { width: min(36vw, 360px); max-width: 100%; min-width: 170px; padding: 0; border: 1px solid transparent; border-radius: 7px; outline: 0; color: #fff; background: transparent; font: 500 20px/1.15 "Fredoka", ui-rounded, sans-serif; }
     .reader-title-input:hover, .reader-title-input:focus { padding: 4px 7px; border-color: rgba(255, 255, 255, .3); background: rgba(255, 255, 255, .08); }
-    .reader-heading { display: grid; gap: 2px; }
+    .reader-heading { display: grid; gap: 2px; min-width: 0; }
     .reader-heading span { color: rgba(255, 255, 255, .65); font-size: 12px; font-weight: 800; }
     .reader-toolbar { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
     .reader-bar button { color: #fff; background: rgba(255, 255, 255, .12); }
@@ -163,9 +163,9 @@
     .reader-bar .tool-button .icon, .reader-bar .save-button .icon { width: 17px; height: 17px; }
     .reader-bar .save-button { color: var(--ink); background: var(--sun); }
     .reader-stage { flex: 1; min-height: 0; overflow: hidden; background: #4a3329; }
-    .pdf-viewer { height: 100%; overflow: auto; padding: 28px 16px 60px; overscroll-behavior: contain; }
-    .pdf-page { position: relative; width: fit-content; max-width: 100%; margin: 0 auto 24px; background: #fff; box-shadow: 0 14px 28px rgba(22, 11, 7, .22); }
-    .pdf-page canvas { display: block; max-width: 100%; height: auto; }
+    .pdf-viewer { height: 100%; overflow: auto; padding: 28px 16px 60px; overscroll-behavior: contain; touch-action: pan-x pan-y; -webkit-overflow-scrolling: touch; }
+    .pdf-page { position: relative; width: fit-content; max-width: none; margin: 0 auto 24px; background: #fff; box-shadow: 0 14px 28px rgba(22, 11, 7, .22); }
+    .pdf-page canvas { display: block; max-width: none; height: auto; }
     .pdf-page .pdf-annotation-layer { position: absolute; inset: 0; width: 100%; height: 100%; cursor: crosshair; touch-action: none; }
     .pdf-loading { display: grid; place-items: center; min-height: 180px; color: #fff8ef; font-size: 14px; font-weight: 800; }
     #pdf-frame { width: 100%; height: 100%; border: 0; background: #fff; }
@@ -208,19 +208,27 @@
     .shape-preview.oval { border-radius: 50%; }
     .shape-preview.box { border-radius: 0; }
     .selection-rect { position: absolute; z-index: 7; border: 1px dashed #ff6115; background: rgba(255, 97, 21, .08); pointer-events: none; }
-    .notebook-stage { overflow: auto; }
+    .notebook-stage { overflow: auto; touch-action: pan-x pan-y; -webkit-overflow-scrolling: touch; }
+    .notebook-zoom-wrap { position: relative; min-width: 100%; min-height: 100%; }
     .notebook-page { width: min(1100px, calc(100% - 32px)); height: 980px; min-height: 980px; overflow: visible; }
     .notebook-page.is-expanded { width: min(1500px, calc(100% - 32px)); height: 1600px; min-height: 1600px; }
     .notebook-page.is-expanded::before { inset: 58px 58px 44px; }
     .notebook-page.is-expanded::after { left: 86px; }
     .notebook-page.is-expanded .paper-label { left: 58px; }
     .image-input-note { max-width: 240px; color: var(--muted); font-size: 12px; line-height: 1.4; }
+    .zoom-control { display: inline-flex; align-items: center; gap: 4px; min-height: 40px; padding: 4px 6px; border: 1px solid rgba(255, 255, 255, .12); border-radius: 11px; color: rgba(255, 255, 255, .72); font-size: 11px; font-weight: 900; letter-spacing: .05em; text-transform: uppercase; }
+    .zoom-control button { width: 32px; min-width: 32px; height: 32px; min-height: 32px; padding: 0; border-radius: 8px; color: #fff; background: rgba(255, 255, 255, .12); font-size: 18px; line-height: 1; }
+    .zoom-control button:hover { background: rgba(255, 255, 255, .22); }
+    .zoom-control output { min-width: 46px; color: #fff; font-size: 11px; font-variant-numeric: tabular-nums; text-align: center; }
+    .zoom-control .zoom-reset { width: auto; min-width: 44px; padding: 0 7px; font-size: 10px; }
     @media (max-width: 680px) {
       .reader-bar { align-items: flex-start; padding: 12px; }
       .reader-toolbar { width: 100%; }
       .reader-bar .tool-button { flex: 1; }
       .reader-bar .tool-button span { display: none; }
       .reader-bar .save-button, .reader-bar .close-button { flex: 1.4; }
+      .reader-heading { width: 100%; }
+      .reader-title-input { width: 100%; min-width: 0; }
       .notebook-page { width: calc(100% - 20px); height: calc(100% - 24px); min-height: 480px; margin: 12px auto; }
       .notebook-page { height: 820px; min-height: 820px; }
       .notebook-page::before { left: 26px; right: 18px; }
@@ -231,6 +239,8 @@
       .tool-slider { min-width: 88px; }
       .tool-slider input { width: 88px; }
       .color-picker { order: 20; }
+      .zoom-control { order: 21; }
+      .zoom-control > span, .zoom-control .zoom-reset { display: none; }
     }
     #toast { position: fixed; left: 50%; bottom: 24px; z-index: 10; display: flex; align-items: center; gap: 8px; max-width: min(90vw, 420px); padding: 13px 17px; border-radius: 14px; color: #fff; background: #3b2922; box-shadow: var(--shadow); font-size: 13px; font-weight: 800; opacity: 0; pointer-events: none; transform: translate(-50%, 20px); transition: opacity .2s ease, transform .2s ease; }
     #toast.show { opacity: 1; transform: translate(-50%, 0); }
@@ -370,6 +380,7 @@
         <span class="tool-divider" aria-hidden="true"></span>
         <label class="tool-slider" title="Pen, highlight, or eraser size"><span>Size <output id="pdf-size-value">3</output></span><input id="pdf-size" type="range" min="1" max="28" value="3" aria-label="Tool size"></label>
         <div class="color-picker" aria-label="Ink and highlight color"><span>Color</span><button class="color-swatch active" type="button" data-color="#ff6115" style="--swatch:#ff6115" aria-label="Orange"></button><button class="color-swatch" type="button" data-color="#2f6fed" style="--swatch:#2f6fed" aria-label="Blue"></button><button class="color-swatch" type="button" data-color="#2e9b63" style="--swatch:#2e9b63" aria-label="Green"></button><button class="color-swatch" type="button" data-color="#e04f5f" style="--swatch:#e04f5f" aria-label="Red"></button><input id="pdf-color" type="color" value="#ff6115" aria-label="Custom annotation color"></div>
+        <div class="zoom-control" data-zoom-surface="pdf" role="group" aria-label="PDF zoom"><span>Zoom</span><button type="button" data-zoom-action="out" aria-label="Zoom out">-</button><output id="pdf-zoom-value">100%</output><button type="button" data-zoom-action="in" aria-label="Zoom in">+</button><button class="zoom-reset" type="button" data-zoom-action="reset" aria-label="Reset PDF zoom">Reset</button></div>
         <button class="tool-button" id="pdf-undo" type="button" aria-label="Undo last mark" title="Undo last mark"><svg class="icon"><use href="#icon-undo"></use></svg><span>Undo</span></button>
         <button class="tool-button" type="button" data-action="copy" aria-label="Copy annotation" title="Copy annotation"><svg class="icon"><use href="#icon-copy"></use></svg><span>Copy</span></button>
         <button class="tool-button" type="button" data-action="paste" aria-label="Paste annotation" title="Paste annotation"><svg class="icon"><use href="#icon-clipboard"></use></svg><span>Paste</span></button>
@@ -395,6 +406,7 @@
         <span class="tool-divider" aria-hidden="true"></span>
         <label class="tool-slider" title="Pen, highlight, or eraser size"><span>Size <output id="notebook-size-value">3</output></span><input id="notebook-size" type="range" min="1" max="28" value="3" aria-label="Tool size"></label>
         <div class="color-picker" aria-label="Ink and highlight color"><span>Color</span><button class="color-swatch active" type="button" data-color="#ff6115" style="--swatch:#ff6115" aria-label="Orange"></button><button class="color-swatch" type="button" data-color="#2f6fed" style="--swatch:#2f6fed" aria-label="Blue"></button><button class="color-swatch" type="button" data-color="#2e9b63" style="--swatch:#2e9b63" aria-label="Green"></button><button class="color-swatch" type="button" data-color="#e04f5f" style="--swatch:#e04f5f" aria-label="Red"></button><input id="notebook-color" type="color" value="#ff6115" aria-label="Custom annotation color"></div>
+        <div class="zoom-control" data-zoom-surface="notebook" role="group" aria-label="Notebook zoom"><span>Zoom</span><button type="button" data-zoom-action="out" aria-label="Zoom out">-</button><output id="notebook-zoom-value">100%</output><button type="button" data-zoom-action="in" aria-label="Zoom in">+</button><button class="zoom-reset" type="button" data-zoom-action="reset" aria-label="Reset notebook zoom">Reset</button></div>
         <button class="tool-button" id="notebook-undo" type="button" aria-label="Undo last mark" title="Undo last mark"><svg class="icon"><use href="#icon-undo"></use></svg><span>Undo</span></button>
         <button class="tool-button" type="button" data-action="copy" aria-label="Copy annotation" title="Copy annotation"><svg class="icon"><use href="#icon-copy"></use></svg><span>Copy</span></button>
         <button class="tool-button" type="button" data-action="paste" aria-label="Paste annotation" title="Paste annotation"><svg class="icon"><use href="#icon-clipboard"></use></svg><span>Paste</span></button>
@@ -404,7 +416,7 @@
         <button class="close-button" id="close-notebook" type="button">Back to library</button>
       </div>
     </div>
-    <div class="reader-stage notebook-stage"><div class="notebook-page"><span class="paper-label">PaperLeaf notes</span><canvas id="notebook-canvas" aria-label="Handwritten notebook page"></canvas><div class="annotation-layer" id="notebook-annotations" aria-label="Notebook annotations"></div></div></div>
+    <div class="reader-stage notebook-stage"><div class="notebook-zoom-wrap"><div class="notebook-page"><span class="paper-label">PaperLeaf notes</span><canvas id="notebook-canvas" aria-label="Handwritten notebook page"></canvas><div class="annotation-layer" id="notebook-annotations" aria-label="Notebook annotations"></div></div></div></div>
   </section>
   <input id="file-input" type="file" accept="application/pdf,.pdf" multiple hidden>
   <input id="image-input" type="file" accept="image/*" hidden>
@@ -441,6 +453,9 @@
     let cropMode = false;
     let pendingImageTarget = null;
     let notebookExpanded = false;
+    let pdfZoom = 1;
+    let notebookZoom = 1;
+    let pdfResizeTimer;
     let clipboardPayload = null;
     let contextItemId = null;
     let contextSurface = null;
@@ -516,6 +531,44 @@
       toast.textContent = message;
       toast.classList.add('show');
       setTimeout(() => toast.classList.remove('show'), 2600);
+    }
+    function formatZoom(value) { return `${Math.round(value * 100)}%`; }
+    function updateZoomUI() {
+      document.querySelector('#pdf-zoom-value').textContent = formatZoom(pdfZoom);
+      document.querySelector('#notebook-zoom-value').textContent = formatZoom(notebookZoom);
+    }
+    function applyNotebookZoom() {
+      const stage = document.querySelector('.notebook-stage');
+      const wrap = document.querySelector('.notebook-zoom-wrap');
+      const page = document.querySelector('.notebook-page');
+      if (!stage || !wrap || !page) return;
+      const baseWidth = Number(page.dataset.zoomWidth) || page.offsetWidth;
+      const baseHeight = Number(page.dataset.zoomHeight) || page.offsetHeight;
+      page.dataset.zoomWidth = baseWidth;
+      page.dataset.zoomHeight = baseHeight;
+      page.style.width = `${baseWidth}px`;
+      page.style.height = `${baseHeight}px`;
+      page.style.transformOrigin = 'top left';
+      page.style.transform = `scale(${notebookZoom})`;
+      wrap.style.width = `${Math.max(stage.clientWidth, baseWidth * notebookZoom + 32)}px`;
+      wrap.style.height = `${Math.max(stage.clientHeight, baseHeight * notebookZoom + 48)}px`;
+    }
+    function resetNotebookZoomBase() {
+      const wrap = document.querySelector('.notebook-zoom-wrap');
+      const page = document.querySelector('.notebook-page');
+      if (wrap) { wrap.style.width = ''; wrap.style.height = ''; }
+      if (page) { page.style.width = ''; page.style.height = ''; page.style.transform = ''; page.style.transformOrigin = ''; delete page.dataset.zoomWidth; delete page.dataset.zoomHeight; }
+    }
+    async function changeZoom(surface, action) {
+      const current = surface === 'pdf' ? pdfZoom : notebookZoom;
+      const next = action === 'reset' ? 1 : clamp(current + (action === 'in' ? .25 : -.25), .5, 2.5);
+      if (surface === 'pdf') {
+        pdfZoom = next; updateZoomUI();
+        if (activePdfItem) await renderPdfDocument(activePdfItem);
+      } else {
+        notebookZoom = next; updateZoomUI(); resizeNotebookCanvas();
+      }
+      show(`${surface === 'pdf' ? 'PDF' : 'Notebook'} zoom ${formatZoom(next)}.`);
     }
     function render() {
       const query = search.value.trim().toLowerCase();
@@ -979,26 +1032,28 @@
         pdfViewer.innerHTML = '';
         for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
           const page = await pdf.getPage(pageNumber); const baseViewport = page.getViewport({ scale: 1 });
-          const maxWidth = Math.min(Math.max(pdfViewer.clientWidth - 32, 280), 900); const scale = Math.min(1.5, Math.max(.65, maxWidth / baseViewport.width)); const viewport = page.getViewport({ scale });
+          const maxWidth = Math.min(Math.max(pdfViewer.clientWidth - 32, 240), 900); const baseScale = Math.min(1.35, Math.max(.45, maxWidth / baseViewport.width)); const cssScale = baseScale * pdfZoom; const pixelRatio = Math.min(window.devicePixelRatio || 1, 3); const viewport = page.getViewport({ scale: cssScale }); const renderViewport = page.getViewport({ scale: cssScale * pixelRatio });
           const wrapper = document.createElement('div'); wrapper.className = 'pdf-page'; wrapper.dataset.page = pageNumber; wrapper.style.width = `${viewport.width}px`;
-          const canvas = document.createElement('canvas'); canvas.width = viewport.width; canvas.height = viewport.height;
-          const annotationCanvas = document.createElement('canvas'); annotationCanvas.className = 'pdf-annotation-layer'; annotationCanvas.width = viewport.width; annotationCanvas.height = viewport.height;
+          const canvas = document.createElement('canvas'); canvas.width = renderViewport.width; canvas.height = renderViewport.height; canvas.style.width = `${viewport.width}px`; canvas.style.height = `${viewport.height}px`;
+          const annotationCanvas = document.createElement('canvas'); annotationCanvas.className = 'pdf-annotation-layer'; annotationCanvas.width = renderViewport.width; annotationCanvas.height = renderViewport.height; annotationCanvas.style.width = `${viewport.width}px`; annotationCanvas.style.height = `${viewport.height}px`;
           const annotationLayer = document.createElement('div'); annotationLayer.className = 'annotation-layer'; annotationLayer.setAttribute('aria-label', `Annotations on page ${pageNumber}`);
-          wrapper.append(canvas, annotationCanvas, annotationLayer); pdfViewer.append(wrapper); await page.render({ canvasContext: canvas.getContext('2d'), viewport }).promise;
+          wrapper.append(canvas, annotationCanvas, annotationLayer); pdfViewer.append(wrapper); await page.render({ canvasContext: canvas.getContext('2d'), viewport: renderViewport }).promise;
           const state = activePdfAnnotations[pageNumber] || (activePdfAnnotations[pageNumber] = emptyState()); drawStrokes(annotationCanvas, state.strokes); renderAnnotationLayer(annotationLayer, state); bindDrawingCanvas(annotationCanvas, () => state, pageNumber);
         }
       } catch (error) { pdfViewer.innerHTML = '<div class="pdf-loading">This PDF could not be opened here. Try importing it again.</div>'; show('Could not open this PDF.'); }
     }
     async function openPdfEditor(item) {
-      activePdfItem = item; activeSurface = 'pdf'; activePdfPage = 1; selectedAnnotationId = null; activeSelection = null; cropMode = false; setDrawingTool('pen');
+      activePdfItem = item; activeSurface = 'pdf'; activePdfPage = 1; selectedAnnotationId = null; activeSelection = null; cropMode = false; pdfZoom = 1; updateZoomUI(); setDrawingTool('pen');
       const titleInput = document.querySelector('#reader-title'); titleInput.value = item.title; titleInput.dataset.titleId = item.id; titleInput.dataset.openTitleId = item.id; document.querySelector('#reader').hidden = false; document.querySelector('#notebook-editor').hidden = true; await renderPdfDocument(item);
     }
     function resizeNotebookCanvas() {
-      if (!notebookCanvas) return; const rect = notebookCanvas.getBoundingClientRect(); const ratio = Math.min(window.devicePixelRatio || 1, 2);
-      notebookCanvas.width = Math.max(1, Math.round(rect.width * ratio)); notebookCanvas.height = Math.max(1, Math.round(rect.height * ratio)); drawStrokes(notebookCanvas, activeNotebookState.strokes); renderAnnotationLayer(document.querySelector('#notebook-annotations'), activeNotebookState);
+      if (!notebookCanvas) return;
+      resetNotebookZoomBase(); applyNotebookZoom();
+      const width = notebookCanvas.clientWidth; const height = notebookCanvas.clientHeight; const ratio = Math.min(4, (window.devicePixelRatio || 1) * notebookZoom);
+      notebookCanvas.width = Math.max(1, Math.round(width * ratio)); notebookCanvas.height = Math.max(1, Math.round(height * ratio)); drawStrokes(notebookCanvas, activeNotebookState.strokes); renderAnnotationLayer(document.querySelector('#notebook-annotations'), activeNotebookState); updateZoomUI();
     }
     async function openNotebookEditor(item) {
-      activeNotebookItem = item; activeSurface = 'notebook'; selectedAnnotationId = null; activeSelection = null; cropMode = false; setDrawingTool('pen');
+      activeNotebookItem = item; activeSurface = 'notebook'; selectedAnnotationId = null; activeSelection = null; cropMode = false; notebookZoom = 1; updateZoomUI(); setDrawingTool('pen');
       activeNotebookState = normaliseState(await loadAnnotations(`notebook:${item.id}`)); const titleInput = document.querySelector('#notebook-title'); titleInput.value = item.title; titleInput.dataset.titleId = item.id; titleInput.dataset.openTitleId = item.id; document.querySelector('#notebook-editor').hidden = false; document.querySelector('#reader').hidden = true;
       requestAnimationFrame(resizeNotebookCanvas);
     }
@@ -1046,6 +1101,7 @@
     document.querySelectorAll('input[type="range"]').forEach(input => input.addEventListener('input', event => setSize(event.target.value)));
     document.querySelectorAll('.color-swatch').forEach(button => button.addEventListener('click', () => setColor(button.dataset.color)));
     document.querySelectorAll('input[type="color"]').forEach(input => input.addEventListener('input', event => setColor(event.target.value)));
+    document.querySelectorAll('[data-zoom-action]').forEach(button => button.addEventListener('click', () => changeZoom(button.closest('[data-zoom-surface]').dataset.zoomSurface, button.dataset.zoomAction)));
     contextMenu.addEventListener('click', event => {
       const action = event.target.closest('[data-context-action]')?.dataset.contextAction;
       const color = event.target.closest('[data-context-color]')?.dataset.contextColor;
@@ -1060,7 +1116,11 @@
     contextMenu.addEventListener('contextmenu', event => event.preventDefault());
     document.addEventListener('click', event => { if (!event.target.closest('#context-menu')) hideContextMenu(); });
     bindDrawingCanvas(notebookCanvas, () => activeNotebookState, 1);
-    window.addEventListener('resize', () => { if (!document.querySelector('#notebook-editor').hidden) resizeNotebookCanvas(); });
+    window.addEventListener('resize', () => {
+      if (!document.querySelector('#notebook-editor').hidden) resizeNotebookCanvas();
+      if (!document.querySelector('#reader').hidden && activePdfItem) { clearTimeout(pdfResizeTimer); pdfResizeTimer = setTimeout(() => renderPdfDocument(activePdfItem), 140); }
+    });
+    updateZoomUI();
     window.addEventListener('keydown', event => {
       const editorOpen = !document.querySelector('#reader').hidden || !document.querySelector('#notebook-editor').hidden;
       if (editorOpen && selectedAnnotationId && (event.key === 'Backspace' || event.key === 'Delete') && !event.target.closest('input, textarea, [contenteditable]')) { event.preventDefault(); deleteAnnotation(selectedItem()); return; }
